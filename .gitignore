@@ -9,6 +9,8 @@
 
 # excluding output folders
 _site
+_site/**
+_site/*.*
 node_modules
 
 # excluding IG assemblies and xml files
@@ -17,4 +19,5 @@ src/*.xml
 
 /api/*.yml
 /api/.manifest
-api/index.md
+/api/index.md
+/api-full/*.*

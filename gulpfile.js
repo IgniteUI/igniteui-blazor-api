@@ -34,7 +34,7 @@ function cleanObj(callback) {
 exports.clean = clean = gulp.series(cleanSite, cleanMetadata, cleanObj);
 
 function copy(callback) {
-    console.log("build copy");
+    console.log("copying ./doc/index.md to ./api/index.md");
     // return gulp.src(['./doc/index.md'] , { base: '.' }).pipe(gulp.dest('./api'));
     gulp.src(['./doc/index.md'])
     .pipe(gulp.dest('./api'))

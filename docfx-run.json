@@ -36,7 +36,8 @@
     ],
     "resource": [
       {
-        "files": ["images/**"]
+        "files": ["images/**"],
+        "exclude": ["obj/**", "_site/**"]
       }
     ],
     // "overwrite": [

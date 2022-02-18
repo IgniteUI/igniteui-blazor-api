@@ -1,4 +1,5 @@
 {
+    "_initialPage": "api/index",
     "_disableNavbar" : false,
     "_disableFooter" : true
-}   
+}

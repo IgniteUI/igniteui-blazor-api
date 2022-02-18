@@ -6,8 +6,8 @@
           "files": [
             // "src/**.dll",
             "src/IgniteUI.Blazor.dll",
-            "src/IgniteUI.Blazor.Documents.Core.dll"
-            // "src/IgniteUI.Blazor.Documents.Excel.dll"
+            "src/IgniteUI.Blazor.Documents.Core.dll",
+            "src/IgniteUI.Blazor.Documents.Excel.dll"
           ]
         }
       ],
@@ -28,7 +28,9 @@
       {
         "files": [
           "toc.yml",
-          "*.md"
+          "api/*.md",
+          "index.md"
+          // "*.md"
         ]
       }
     ],
@@ -37,15 +39,15 @@
         "files": ["images/**"]
       }
     ],
-    "overwrite": [
-      {
-        "files": ["doc/**.md"],
-        "exclude": [
-          "obj/**",
-          "_site/**"
-        ]
-      }
-    ],
+    // "overwrite": [
+    //   {
+    //     "files": ["doc/**.md"],
+    //     "exclude": [
+    //       "obj/**",
+    //       "_site/**"
+    //     ]
+    //   }
+    // ],
     "dest": "_site",
     "globalMetadataFiles": ["global.json"],
     "fileMetadataFiles": [],
