@@ -4,7 +4,6 @@
 {{#docurl}}
 <span class="small pull-right mobile-hide">
   <span class="divider">|</span>
-  <a href="{{docurl}}">Improve this Doc</a>
 </span>{{/docurl}}
 {{#sourceurl}}
 <span class="small pull-right mobile-hide">

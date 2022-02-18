@@ -21,7 +21,6 @@
       {{#docurl}}
       <span class="small pull-right mobile-hide">
         <span class="divider">|</span>
-        <a href="{{docurl}}">{{__global.improveThisDoc}}</a>
       </span>{{/docurl}}
       {{#sourceurl}}
       <span class="small pull-right mobile-hide">
