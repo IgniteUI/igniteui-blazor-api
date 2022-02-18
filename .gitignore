@@ -15,7 +15,8 @@ node_modules
 
 # excluding IG assemblies and xml files
 src/*.dll
-src/*.xml
+# src/*.xml
+src-org
 
 /api/*.yml
 /api/.manifest
