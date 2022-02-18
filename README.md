@@ -16,7 +16,7 @@ This project generates API documentation for **Ignite UI for Blazor** components
 
 - paste copied `.dll` and `.xml` files in `src` folder:
 
-<img src="./images/src-folder.png" alt="src-folder" height="270" style="margin-left: 40px"/>
+<img src="./images/src-folder.PNG" alt="src-folder" height="270" style="margin-left: 40px"/>
 
 ## Build Instructions
 
