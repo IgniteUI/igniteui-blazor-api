@@ -22,8 +22,10 @@ function cleanMetadata(callback) {
 
 // gulp.task('cleanObj', function(callback) {
 function cleanObj(callback) {
-    del.sync("**/obj/**/*");
-    del.sync("**/obj");
+    del.sync("obj/**/*");
+    del.sync("obj");
+    del.sync("src/obj/**/*");
+    del.sync("src/obj");
     callback();
     return;
 // });
@@ -33,9 +35,8 @@ function cleanObj(callback) {
 
 exports.clean = clean = gulp.series(cleanSite, cleanMetadata, cleanObj);
 
-function copy(callback) {
+function copyIndex(callback) {
     console.log("copying ./doc/index.md to ./api/index.md");
-    // return gulp.src(['./doc/index.md'] , { base: '.' }).pipe(gulp.dest('./api'));
     gulp.src(['./doc/index.md'])
     .pipe(gulp.dest('./api'))
     .on("end", function() {
@@ -44,8 +45,18 @@ function copy(callback) {
     });
 }
 
+function copyAssemblies(callback) {
+    console.log("copying ./app/**/IgniteUI.Blazor*.dll to ./src/IgniteUI.Blazor*.dll");
+    gulp.src(['./blazor-app/bin/Debug/net6.0/IgniteUI.Blazor*.*'])
+    .pipe(gulp.dest('./src'))
+    .on("end", function() {
+        callback();
+        return;
+    });
+}
+exports.copyAssemblies = copyAssemblies;
+
 function buildFrom(docfxJSON, callback) {
-    // copy();
     console.log("build " + docfxJSON);
     var response = spawnSync("docfx", [docfxJSON], { stdio: 'inherit' });
     if (response.status != 0)
@@ -78,7 +89,7 @@ function buildDOC(callback) {
 }
 exports.buildDOC = buildDOC;
 
-exports.run = gulp.series(copy, buildDOC);
-exports.build = gulp.series(clean, copy, buildAPI);
+exports.run = gulp.series(copyIndex, buildDOC);
+exports.build = gulp.series(clean, copyIndex, buildAPI);
 
 // gulp.task('default', gulp.series('run'));
