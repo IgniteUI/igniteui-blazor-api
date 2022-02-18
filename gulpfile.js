@@ -90,6 +90,6 @@ function buildDOC(callback) {
 exports.buildDOC = buildDOC;
 
 exports.run = gulp.series(copyIndex, buildDOC);
-exports.build = gulp.series(clean, copyIndex, buildAPI);
+exports.build = gulp.series(clean, copyIndex, copyAssemblies, buildAPI);
 
 // gulp.task('default', gulp.series('run'));
