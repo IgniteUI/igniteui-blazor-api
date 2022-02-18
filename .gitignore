@@ -1,23 +1,20 @@
-# Compiled class file
-*.class
+# list of excluded folders and files from repo
+/**/DROP/
+/**/TEMP/
+/**/packages/
 
-# Log file
-*.log
+# excluding build folders
+/**/bin/
+/**/obj/
 
-# BlueJ files
-*.ctxt
+# excluding output folders
+_site
+node_modules
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# excluding IG assemblies and xml files
+src/*.dll
+src/*.xml
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+/api/*.yml
+/api/.manifest
+api/index.md

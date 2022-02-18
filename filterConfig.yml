@@ -1,0 +1,4 @@
+apiRules:
+- exclude:
+    uidRegex: ^IgniteUI\.Blazor\._Imports$
+    type: Class
