@@ -1,5 +1,8 @@
 var gulp = require('gulp');
 var del = require('del');
+let es = require('event-stream');
+let fs = require('fs')
+
 var { spawnSync } = require('child_process');
 
 // gulp.task('cleanSite', function(callback) {
@@ -45,19 +48,52 @@ function copyIndex(callback) {
     });
 }
 
-function copyAssemblies(callback) {
-    console.log("copying ./app/**/IgniteUI.Blazor*.dll to ./src/IgniteUI.Blazor*.dll");
-    gulp.src(['./blazor-app/bin/Debug/net6.0/IgniteUI.Blazor*.*'])
+function copyBlazorSource(callback) {
+    console.log("copying ./app/**/IgniteUI.Blazor*.* to ./src/IgniteUI.Blazor*.*");
+    gulp.src(['./app/bin/Debug/net6.0/IgniteUI.Blazor*.*'])
+    .pipe(es.map(function(file, fileCallback) {
+        console.log("copying " + file.dirname + '/' + file.basename);
+        fileCallback(null, file);
+    }))
     .pipe(gulp.dest('./src'))
     .on("end", function() {
         callback();
         return;
     });
 }
-exports.copyAssemblies = copyAssemblies;
+exports.copyBlazorSource = copyBlazorSource;
+
+function verifyBlazorSource(callback) {
+    let srcFiles = [
+        './src/IgniteUI.Blazor.dll',
+        './src/IgniteUI.Blazor.xml',
+        './src/IgniteUI.Blazor.Documents.Core.dll',
+        './src/IgniteUI.Blazor.Documents.Core.xml',
+        './src/IgniteUI.Blazor.Documents.Excel.dll',
+        './src/IgniteUI.Blazor.Documents.Excel.xml',
+    ]
+    var filesMissing = [];
+    for (const filePath of srcFiles) {
+        if (fs.existsSync(filePath)) {
+            console.log("found:   " + filePath);
+        } else {
+            console.log("missing: " + filePath);
+            filesMissing.push(filePath);
+        }
+    }
+    if (filesMissing.length > 0) {
+        throw new Error("Cannot build while these files are missing: \n" + filesMissing.join('\n') + "\n>>> Check if you build Blazor app from in the `app` folder <<<");
+    }
+    if (callback)
+        callback();
+}
+exports.verifyBlazorSource = verifyBlazorSource;
 
 function buildFrom(docfxJSON, callback) {
     console.log("build " + docfxJSON);
+
+    verifyBlazorSource();
+
     var response = spawnSync("docfx", [docfxJSON], { stdio: 'inherit' });
     if (response.status != 0)
     {
@@ -90,6 +126,6 @@ function buildDOC(callback) {
 exports.buildDOC = buildDOC;
 
 exports.run = gulp.series(copyIndex, buildDOC);
-exports.build = gulp.series(clean, copyIndex, copyAssemblies, buildAPI);
+exports.build = gulp.series(clean, copyIndex, copyBlazorSource, buildAPI);
 
 // gulp.task('default', gulp.series('run'));
