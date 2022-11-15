@@ -10,6 +10,10 @@ This project generates API documentation for **Ignite UI for Blazor** components
 
 This section will guide you to setup a blazor application in the `app` folder:
 
+- in notepad, open `/app/blazor-app.csproj` file
+
+- update version of IgniteUI packages to latest version
+
 - open **VS Code** terminal window
 - run `cd app` command
 - run `dotnet restore --force` command
@@ -45,7 +49,7 @@ This section explains how to update [API Landing Page](https://staging.infragist
 
 - open `index-links.json` file
 
-- add entries for new API members, where `api` is name of API component, and `url` is routing path for a topic that provides documentation and examples of the API component
+- add entries for new API members (if any), where `api` is name of API component, and `url` is routing path for a topic that provides documentation and examples of the API component
 
 ```
 { "api": "IgbTreeGrid", "links": [ { "url": "/grids/tree-grid/overview" }] },
