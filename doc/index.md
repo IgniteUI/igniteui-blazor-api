@@ -29,7 +29,7 @@ API Component        | Resources
 [IgbDateTimeInput](IgniteUI.Blazor.Controls.IgbDateTimeInput.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/date-time-input)
 [IgbDoughnutChart](IgniteUI.Blazor.Controls.IgbDoughnutChart.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/donut-chart)
 [IgbDropdown](IgniteUI.Blazor.Controls.IgbDropdown.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/dropdown)
-[IgbExpansionPanel ](IgniteUI.Blazor.Controls.IgbExpansionPanel .html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)
+[IgbExpansionPanel](IgniteUI.Blazor.Controls.IgbExpansionPanel.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/layouts/expansion-panel)
 [IgbFinancialChart](IgniteUI.Blazor.Controls.IgbFinancialChart.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/stock-chart)
 [IgbForm](IgniteUI.Blazor.Controls.IgbForm.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/inputs/form)
 [IgbGeographicMap](IgniteUI.Blazor.Controls.IgbGeographicMap.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/geo-map)
