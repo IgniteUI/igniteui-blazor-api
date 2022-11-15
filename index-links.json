@@ -1,0 +1,52 @@
+[
+  { "api": "Infragistics.Documents.Excel", "links": [ { "url": "/excel-library" }] },
+  { "api": "IgbAvatar", "links": [ { "url": "/layouts/avatar" }] },
+  { "api": "IgbBadge", "links": [ { "url": "/inputs/badge" }] },
+  { "api": "IgbBulletGraph", "links": [ { "url": "/bullet-graph" }] },
+  { "api": "IgbButton", "links": [ { "url": "/inputs/button" }] },
+  { "api": "IgbCalendar", "links": [ { "url": "/scheduling/calendar" }] },
+  { "api": "IgbCard", "links": [ { "url": "/layouts/card" }] },
+  { "api": "IgbCheckbox", "links": [ { "url": "/inputs/checkbox" }] },
+  { "api": "IgbDatePicker", "links": [ { "url": "/editors/date-picker" }] },
+  { "api": "IgbDataGrid", "links": [ { "url": "/grids/data-grid" }] },
+  { "api": "IgbDoughnutChart", "links": [ { "url": "/charts/types/donut-chart" }] },
+  { "api": "IgbFinancialChart", "links": [ { "url": "/charts/types/stock-chart" }] },
+  { "api": "IgbGeographicMap", "links": [ { "url": "/geo-map" }] },
+  { "api": "IgbForm", "links": [ { "url": "/inputs/form" }] },
+  { "api": "IgbIcon", "links": [ { "url": "/layouts/icon" }] },
+  { "api": "IgbIconButton", "links": [ { "url": "/inputs/icon-button" }] },
+  { "api": "IgbInput", "links": [ { "url": "/inputs/input" }] },
+  { "api": "IgbList", "links": [ { "url": "/grids/list" }] },
+  { "api": "IgbLinearGauge", "links": [ { "url": "/linear-gauge" }] },
+  { "api": "IgbMultiColumnComboBox", "links": [ { "url": "/editors/multi-column-combobox" }] },
+  { "api": "IgbNavbar", "links": [ { "url": "/menus/navbar" }] },
+  { "api": "IgbNavDrawer", "links": [ { "url": "/menus/navigation-drawer" }] },
+  { "api": "IgbPieChart", "links": [ { "url": "/charts/types/pie-chart" }] },
+  { "api": "IgbRadialGauge", "links": [ { "url": "/radial-gauge" }] },
+  { "api": "IgbRadio", "links": [ { "url": "/inputs/radio" }] },
+  { "api": "IgbRipple", "links": [ { "url": "/inputs/ripple" }] },
+  { "api": "IgbSparkline", "links": [ { "url": "/charts/types/sparkline-chart" }] },
+  { "api": "IgbSwitch", "links": [ { "url": "/inputs/switch" }] },
+  { "api": "IgbTreemap", "links": [ { "url": "/charts/types/treemap-chart" }] },
+  { "api": "IgbCategoryChart",
+    "links": [
+        { "text": "Docs & Examples for Column Chart", "url": "/charts/types/column-chart" },
+        { "text": "Docs & Examples for Line Chart", "url": "/charts/types/line-chart" },
+        { "text": "Docs & Examples for Point Chart", "url": "/charts/types/point-chart" },
+        { "text": "Docs & Examples for Spline Chart", "url": "/charts/types/spline-chart" }
+    ]
+  },
+  { "api": "IgbDataChart",
+    "links": [
+        { "text": "Docs & Examples for Bar Chart", "url": "/charts/types/bar-chart" },
+        { "text": "Docs & Examples for Bubble Chart", "url": "/charts/types/bubble-chart" },
+        { "text": "Docs & Examples for Composite Chart", "url": "/charts/types/composite-chart" },
+        { "text": "Docs & Examples for Polar Chart", "url": "/charts/types/polar-chart" },
+        { "text": "Docs & Examples for Radial Chart", "url": "/charts/types/radial-chart" },
+        { "text": "Docs & Examples for Scatter Chart", "url": "/charts/types/scatter-chart" },
+        { "text": "Docs & Examples for Shape Chart", "url": "/charts/types/shape-chart" },
+        { "text": "Docs & Examples for Stacked Chart", "url": "/charts/types/stacked-chart" },
+        { "text": "Docs & Examples for Step Chart", "url": "/charts/types/step-chart" }
+    ]
+  }
+]

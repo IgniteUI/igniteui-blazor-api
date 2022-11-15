@@ -125,7 +125,59 @@ function buildDOC(callback) {
 }
 exports.buildDOC = buildDOC;
 
-exports.run = gulp.series(copyIndex, buildDOC);
-exports.build = gulp.series(clean, copyIndex, copyBlazorSource, buildAPI);
+exports.run = gulp.series(updateIndex, copyIndex, buildDOC);
+exports.build = gulp.series(clean, updateIndex, copyIndex, copyBlazorSource, buildAPI);
 
 // gulp.task('default', gulp.series('run'));
+
+function updateIndex(callback) {
+
+    let jsonFile = fs.readFileSync("index-links.json", "utf8");
+    let jsonLinks = JSON.parse(jsonFile);
+    // console.log(jsonLinks);
+
+    var tableMarkdown = "";
+    tableMarkdown += "API Component        | Resources \n"
+    tableMarkdown += "-------------------- | ------------------- \n"
+
+    for (const info of jsonLinks) {
+        // [IgbTreemap](IgniteUI.Blazor.Controls.IgbTreemap.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/treemap-chart)
+        var api = info.api;
+        if (api.indexOf(".") < 0) {
+            api = "IgniteUI.Blazor.Controls." + api;
+        }
+        api += ".html";
+
+        var row = "";
+        row += "[" + info.api + "]" + "(" + api + ") | ";
+
+        var mdLinks = [];
+        for (const link of info.links) {
+            var mdLink = "[" + (link.text === undefined ? "Docs & Examples" : link.text) + "]";
+            mdLink += "(https://www.infragistics.com/products/ignite-ui-blazor/blazor/components" + link.url + ")";
+            mdLinks.push(mdLink);
+        }
+        row += mdLinks.join(" <br> ");
+
+        tableMarkdown += row + "\n";
+    }
+    // console.log(tableMarkdown);
+
+    var indexFiles =  ["./index.md", "./doc/index.md"];
+    for (const filePath of indexFiles) {
+        let indexFile = fs.readFileSync(filePath, "utf8");
+        var tableStart = indexFile.indexOf("<!-- auto-gen-table-start -->") + 29;
+        var tableEnd = indexFile.indexOf("<!-- auto-gen-table-end -->");
+
+        var output = indexFile.substring(0, tableStart) + "\n" + tableMarkdown + indexFile.substring(tableEnd);;
+
+        // console.log(output);
+        fs.writeFileSync(filePath, output);
+    }
+
+
+
+    if (callback)
+        callback();
+}
+exports.updateIndex = updateIndex;
