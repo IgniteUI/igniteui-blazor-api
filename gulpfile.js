@@ -136,6 +136,8 @@ function updateIndex(callback) {
     let jsonLinks = JSON.parse(jsonFile);
     // console.log(jsonLinks);
 
+    jsonLinks = jsonLinks.sort((a, b) => a.api > b.api ? 1 : -1);
+
     var tableMarkdown = "";
     tableMarkdown += "API Component        | Resources \n"
     tableMarkdown += "-------------------- | ------------------- \n"
