@@ -25,10 +25,12 @@ function cleanMetadata(callback) {
 
 // gulp.task('cleanObj', function(callback) {
 function cleanObj(callback) {
+
     del.sync("obj/**/*");
     del.sync("obj");
     del.sync("src/obj/**/*");
     del.sync("src/obj");
+    del.sync("src/IgniteUI.Blazor*.dll");
     callback();
     return;
 // });
@@ -49,8 +51,11 @@ function copyIndex(callback) {
 }
 
 function copyBlazorSource(callback) {
+
     console.log("copying ./app/**/IgniteUI.Blazor*.* to ./src/IgniteUI.Blazor*.*");
-    gulp.src(['./app/bin/Debug/net6.0/IgniteUI.Blazor*.*'])
+    gulp.src([
+        './app/bin/Debug/net6.0/IgniteUI.Blazor*.*'
+    ])
     .pipe(es.map(function(file, fileCallback) {
         console.log("copying " + file.dirname + '/' + file.basename);
         fileCallback(null, file);
