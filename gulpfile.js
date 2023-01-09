@@ -55,6 +55,9 @@ function copyBlazorSource(callback) {
     console.log("copying ./app/**/IgniteUI.Blazor*.* to ./src/IgniteUI.Blazor*.*");
     gulp.src([
         './app/bin/Debug/net6.0/IgniteUI.Blazor*.*'
+     // './app/bin/Debug/net6.0/IgniteUI.Blazor.dll',
+     // './app/bin/Debug/net6.0/IgniteUI.Blazor.Documents.Core.dll',
+     // './app/bin/Debug/net6.0/IgniteUI.Blazor.Documents.Excel.dll',
     ])
     .pipe(es.map(function(file, fileCallback) {
         console.log("copying " + file.dirname + '/' + file.basename);
