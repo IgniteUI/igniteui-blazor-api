@@ -13,9 +13,14 @@ steps:
     arguments: restore
     workingFolder: '$(Build.SourcesDirectory)\app'
 - task: MSBuild@1
+  enabled: false
   inputs:
     solution: '$(Build.SourcesDirectory)/app/**/*.csproj'
     msbuildArguments: '/target:Restore'
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: 
+
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
