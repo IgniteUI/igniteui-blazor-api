@@ -9,10 +9,15 @@ pool:
 steps:
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
+  enabled: false
   inputs:
     filename: dotnet
     arguments: restore
     workingFolder: '$(Build.SourcesDirectory)\app'
+- task: MSBuild@1
+  inputs:
+    solution: '$(Build.SourcesDirectory)/app/**/*.csproj'
+    msbuildArguments: '/target Restore'
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
