@@ -2,7 +2,7 @@ trigger:
 - master
 
 pool:
-  name: DEVTOOLS-XPLATPROD
+  name: BuildDeployment
 
 steps:
 - task: CmdLine@1
