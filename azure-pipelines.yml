@@ -3,6 +3,8 @@ trigger:
 
 pool:
   name: BuildDeployment
+  demands:
+  - Agent.ComputerName -equals S0103BLD1P
 
 steps:
 - task: CmdLine@1
