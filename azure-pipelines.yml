@@ -2,9 +2,7 @@ trigger:
 - master
 
 pool:
-  name: BuildDeployment
-  demands:
-  - Agent.ComputerName -equals S0103BLD1P
+  name: DEVTOOLS-XPLATPROD
 
 steps:
 - task: CmdLine@1
