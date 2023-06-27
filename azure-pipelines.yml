@@ -23,7 +23,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: '$(Build.SourcesDirectory)/app/**/*.sln'
+    restoreSolution: '$(Build.SourcesDirectory)/app/**/*.csproj'
     feedsToUse: 'config'
     nugetConfigPath: '$(Build.SourcesDirectory)/Nuget.Config'
 
