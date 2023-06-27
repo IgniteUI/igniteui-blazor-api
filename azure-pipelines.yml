@@ -20,6 +20,12 @@ steps:
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: 
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(Build.SourcesDirectory)/app/**/*.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: '$(Build.SourcesDirectory)/Nuget.Config'
 
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
