@@ -7,26 +7,10 @@ pool:
 steps:
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
-  enabled: false
   inputs:
     filename: dotnet
     arguments: restore
     workingFolder: '$(Build.SourcesDirectory)\app'
-- task: MSBuild@1
-  enabled: false
-  inputs:
-    solution: '$(Build.SourcesDirectory)/app/**/*.csproj'
-    msbuildArguments: '/target:Restore'
-- task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: 
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(Build.SourcesDirectory)/app/**/*.csproj'
-    feedsToUse: 'config'
-    nugetConfigPath: '$(Build.SourcesDirectory)/Nuget.Config'
-
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
