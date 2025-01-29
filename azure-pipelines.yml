@@ -25,4 +25,4 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
-    arguments: 'install IgniteUI.Blazor.Documents.Core.Trial  -Version 23.1.37 -DependencyVersion Ignore'
+    arguments: 'install IgniteUI.Blazor.Documents.Core  -Version 23.1.37 -DependencyVersion Ignore'
