@@ -10,10 +10,15 @@ steps:
   inputs:
     versionSpec: '5.x'
 
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'custom'
-#    arguments: 'sources Add -Name "IG ProGet IgniteUINuGet - Staging" -Source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ -Force'
+- task: NuGetCommand@2
+  inputs:
+    command: 'custom'
+    arguments: 'sources Remove -Name "IG ProGet IgniteUINuGet - Staging"'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'custom'
+    arguments: 'sources Add -Name "IG ProGet IgniteUINuGet - Staging" -Source http://proget.infragistics.local:81/nuget/IgniteUINuGet/'
 
 - task: NuGetAuthenticate@1
   inputs:
