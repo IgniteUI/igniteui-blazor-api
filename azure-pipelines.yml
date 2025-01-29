@@ -2,10 +2,41 @@ trigger:
 - master
 
 pool:
-  name: BuildAgentOnPrem
+  name: BuildDeployment
+  demands:
+  - Agent.ComputerName -equals S0103BLD1P
 
 steps:
-- task: CmdLine@2
+- task: CmdLine@1
+  displayName: 'Run dotnet in blazor app'
   inputs:
-    script: |
-      echo bahur
+    filename: dotnet
+    arguments: restore
+    workingFolder: '$(Build.SourcesDirectory)\app'
+- task: CmdLine@1
+  displayName: 'Run dotnet in blazor app'
+  inputs:
+    filename: dotnet
+    arguments: 'build --force'
+    workingFolder: '$(Build.SourcesDirectory)\app'
+- task: Npm@0
+  displayName: 'npm install'
+  inputs:
+    cwd: '$(Build.SourcesDirectory)'
+- task: CmdLine@1
+  displayName: 'npm run build'
+  inputs:
+    filename: npm
+    arguments: 'run build'
+- task: ArchiveFiles@1
+  displayName: 'Archive files '
+  inputs:
+    rootFolder: '$(Build.SourcesDirectory)/_site'
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/IgniteUIBlazorAPIDocfx.zip'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: docsAPISite'
+  inputs:
+    ArtifactName: docsAPISite
+    publishLocation: FilePath
+    TargetPath: '\\infragistics.local\igfiles\Builds\Blazor\$(Build.BuildNumber)'
