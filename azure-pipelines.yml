@@ -2,7 +2,8 @@ trigger:
 - master
 
 pool:
-  name: BuildAgentOnPrem
+  vmImage: 'windows-latest'
+
 
 steps:
 - task: CmdLine@2
@@ -14,9 +15,16 @@ steps:
   inputs:
     versionSpec: '5.x'
 
+- task: NuGetCommand@2
+  inputs:
+    command: 'custom'
+    arguments: 'nuget sources Add -Name "PublicProGet" -Source https://packages.infragistics.com/nuget/licensed/'
+
 - task: NuGetAuthenticate@1
   inputs:
     nuGetServiceConnections: 'Public Proget Server - Licensed feed - NuGetAuthenticate'
+
+
 
 - task: NuGetCommand@2
   inputs:
