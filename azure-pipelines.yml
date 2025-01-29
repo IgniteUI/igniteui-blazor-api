@@ -11,14 +11,10 @@ steps:
     script: |
       echo bahur
 
-- task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: '5.x'
-
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
-    arguments: 'nuget sources Add -Name "PublicProGet" -Source https://packages.infragistics.com/nuget/licensed/'
+    arguments: 'sources Add -Name "PublicProGet" -Source https://packages.infragistics.com/nuget/licensed/'
 
 - task: NuGetAuthenticate@1
   inputs:
