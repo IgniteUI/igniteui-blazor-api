@@ -19,9 +19,14 @@ steps:
   inputs:
     nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
 
-
-
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
     arguments: 'install IgniteUI.Blazor.Documents.Core  -Version 23.1.37 -DependencyVersion Ignore'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.csproj'
+    feedsToUse: 'config'
+    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
