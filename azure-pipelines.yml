@@ -13,7 +13,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
-    arguments: 'sources Add -Name "IG ProGet IgniteUINuGet - Staging" -Source http://proget.infragistics.local:81/nuget/IgniteUINuGet/v3/index.json'
+    arguments: 'sources Add -Name "IG ProGet IgniteUINuGet - Staging" -Source http://proget.infragistics.local:81/nuget/IgniteUINuGet/'
 
 - task: NuGetAuthenticate@1
   inputs:
