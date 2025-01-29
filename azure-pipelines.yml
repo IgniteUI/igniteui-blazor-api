@@ -35,3 +35,25 @@ steps:
     restoreSolution: '**/*.csproj'
     feedsToUse: 'config'
     externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+
+- task: CmdLine@1
+  displayName: 'Run dotnet in blazor app'
+  inputs:
+    filename: dotnet
+    arguments: 'build --force'
+    workingFolder: '$(Build.SourcesDirectory)\app'
+
+- task: NodeTool@0
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '18.x'
+
+- task: Npm@0
+  displayName: 'npm install'
+  inputs:
+    cwd: '$(Build.SourcesDirectory)'
+- task: CmdLine@1
+  displayName: 'npm run build'
+  inputs:
+    filename: npm
+    arguments: 'run build'
