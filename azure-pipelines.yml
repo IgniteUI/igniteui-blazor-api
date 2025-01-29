@@ -2,41 +2,23 @@ trigger:
 - master
 
 pool:
-  name: BuildDeployment
-  demands:
-  - Agent.ComputerName -equals S0103BLD1P
+  name: BuildAgentOnPrem
 
 steps:
-- task: CmdLine@1
-  displayName: 'Run dotnet in blazor app'
+- task: CmdLine@2
   inputs:
-    filename: dotnet
-    arguments: restore
-    workingFolder: '$(Build.SourcesDirectory)\app'
-- task: CmdLine@1
-  displayName: 'Run dotnet in blazor app'
+    script: |
+      echo bahur
+
+- task: NuGetToolInstaller@1
   inputs:
-    filename: dotnet
-    arguments: 'build --force'
-    workingFolder: '$(Build.SourcesDirectory)\app'
-- task: Npm@0
-  displayName: 'npm install'
+    versionSpec: '5.x'
+
+- task: NuGetAuthenticate@1
   inputs:
-    cwd: '$(Build.SourcesDirectory)'
-- task: CmdLine@1
-  displayName: 'npm run build'
+    nuGetServiceConnections: 'Public Proget Server - Licensed feed'
+
+- task: NuGetCommand@2
   inputs:
-    filename: npm
-    arguments: 'run build'
-- task: ArchiveFiles@1
-  displayName: 'Archive files '
-  inputs:
-    rootFolder: '$(Build.SourcesDirectory)/_site'
-    includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/IgniteUIBlazorAPIDocfx.zip'
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: docsAPISite'
-  inputs:
-    ArtifactName: docsAPISite
-    publishLocation: FilePath
-    TargetPath: '\\infragistics.local\igfiles\Builds\Blazor\$(Build.BuildNumber)'
+    command: 'custom'
+    arguments: 'install IgniteUI.Blazor.Documents.Core  -Version 23.1.37 -DependencyVersion Ignore'
