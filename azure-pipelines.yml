@@ -21,6 +21,13 @@ steps:
   inputs:
     versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
 
+- task: UseDotNet@2
+  displayName: 'Install dotnet sdk'
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
+    performMultiLevelLookup: false
+
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
@@ -28,13 +35,6 @@ steps:
     feedsToUse: 'config'
     externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
     noCache: true
-
-- task: UseDotNet@2
-  displayName: 'Install dotnet sdk'
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
-    performMultiLevelLookup: false
 
 #- task: CmdLine@1
 #  displayName: 'Run dotnet in blazor app'
