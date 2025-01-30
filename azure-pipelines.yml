@@ -2,9 +2,9 @@ trigger:
 - master
 
 pool:
-  name: BuildDeployment
+  name: BuildAgentOnPrem
   demands:
-  - Agent.ComputerName -equals S0103BLD1P
+  - Agent.ComputerName -equals IGBGSOFBUILD90
 
 steps:
 - task: NodeTool@0
