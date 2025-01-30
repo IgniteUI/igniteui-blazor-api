@@ -1,5 +1,3 @@
-trigger:
-- master
 
 pool:
  name: BuildAgentOnPrem
@@ -25,15 +23,17 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      nuget install IgniteUI.Blazor.Documents.Core -Version 23.1.37 -DependencyVersion Ignore 
+      nuget install IgniteUI.Blazor.Documents.Core -Version 23.1.37 -DependencyVersion Ignore
 
 
       $xml = [XML](Get-Content '.\blazor-app.csproj');
-      
       $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
         ForEach-Object { 
             Write-Host $_.Include
             Write-Host $_.Version
+            $nugetInstallCommand = "nuget install I$_.Include -Version $_.Version -DependencyVersion Ignore"
+            Write-Host $nugetInstallCommand
+            Invoke-Expression -Command $nugetInstallCommand
         }
     failOnStderr: true
     showWarnings: true
