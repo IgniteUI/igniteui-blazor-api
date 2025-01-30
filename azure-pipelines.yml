@@ -7,6 +7,12 @@ pool:
   - Agent.ComputerName -equals S0103BLD1P
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Install dotnet if not already present'
+  inputs:
+    packageType: 'sdk'
+    version: '9.0.101'
+    performMultiLevelLookup: false
 - task: PowerShell@2
   displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
   inputs:
