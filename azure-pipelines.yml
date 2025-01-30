@@ -26,7 +26,7 @@ steps:
       dotnet new nugetconfig --force
       dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
       # Manually add the allowInsecureConnections attribute to the nuget.config file
-      $nugetConfigPath = "$(Build.SourcesDirectory)\NuGet.config"
+      $nugetConfigPath = "$(Build.SourcesDirectory)\Nuget.Config"
       [xml]$nugetConfig = Get-Content $nugetConfigPath
       $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
        # Add credentials to the nuget.config file
