@@ -20,7 +20,24 @@ steps:
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
+- task: PowerShell@2
+  displayName: 'Identify trial packages and use licensed ones instead'
+  inputs:
+    targetType: 'inline'
+    script: |
+      nuget install IgniteUI.Blazor.Documents.Core -Version 23.1.37 -DependencyVersion Ignore 
 
+
+      $xml = [XML](Get-Content '.\blazor-app.csproj');
+      
+      $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
+        ForEach-Object { 
+            Write-Host $_.Include
+            Write-Host $_.Version
+        }
+    failOnStderr: true
+    showWarnings: true
+    workingDirectory: '$(Build.SourcesDirectory)\app'
 - task: UseDotNet@2
   displayName: 'Install dotnet sdk'
   inputs:
@@ -28,13 +45,13 @@ steps:
     version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
     performMultiLevelLookup: false
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-    feedsToUse: 'config'
-    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
-    noCache: true
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'restore'
+#    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+#    feedsToUse: 'config'
+#    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+#    noCache: true
 
 #- task: CmdLine@1
 #  displayName: 'Run dotnet in blazor app'
@@ -43,17 +60,17 @@ steps:
 #    arguments: 'build --force'
 #    workingFolder: '
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    arguments: '--no-restore'
-    workingDirectory: '$(Build.SourcesDirectory)\app'
+#- task: DotNetCoreCLI@2
+#  inputs:
+#    command: 'build'
+#    arguments: '--no-restore'
+#    workingDirectory: '$(Build.SourcesDirectory)\app'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    arguments: '--no-restore'
-    workingDirectory: '$(Build.SourcesDirectory)\app'
+#- task: DotNetCoreCLI@2
+#  inputs:
+#    command: 'build'
+#    arguments: '--no-restore'
+#    workingDirectory: '$(Build.SourcesDirectory)\app'
 
 - task: NodeTool@0
   inputs:
