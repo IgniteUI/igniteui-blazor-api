@@ -24,12 +24,17 @@ steps:
     version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
     performMultiLevelLookup: false
 
-- task: CmdLine@1
-  displayName: 'Run dotnet in blazor app'
+#- task: CmdLine@1
+#  displayName: 'Run dotnet in blazor app'
+#  inputs:
+#    filename: dotnet
+#    arguments: 'build --force'
+#    workingFolder: '$(Build.SourcesDirectory)\app'
+
+- task: DotNetCoreCLI@2
   inputs:
-    filename: dotnet
-    arguments: 'build --force'
-    workingFolder: '$(Build.SourcesDirectory)\app'
+    command: 'build'
+    workingDirectory: '$(Build.SourcesDirectory)\app'
 
 - task: NodeTool@0
   inputs:
