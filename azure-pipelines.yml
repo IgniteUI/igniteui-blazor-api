@@ -34,6 +34,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
+    arguments: '--no-restore'
     workingDirectory: '$(Build.SourcesDirectory)\app'
 
 - task: NodeTool@0
