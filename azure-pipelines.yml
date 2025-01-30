@@ -24,6 +24,22 @@ steps:
     targetType: 'inline'
     script: |
       dotnet new nugetconfig --force
+      # The name of the source doesn't currently matter as the credentials are attached thanks to URL matching - according to MS docs
+      dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
+      # Manually add the allowInsecureConnections attribute to the nuget.config file
+      $nugetConfigPath = "$(Build.SourcesDirectory)\NuGet.Config"
+      [xml]$nugetConfig = Get-Content $nugetConfigPath
+      $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
+      $nugetConfig.Save($nugetConfigPath)
+    failOnStderr: true
+    showWarnings: true
+    workingDirectory: '$(Build.SourcesDirectory)'
+- task: PowerShell@2
+  displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
+  inputs:
+    targetType: 'inline'
+    script: |
+      dotnet new nugetconfig --force
       dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
       # Manually add the allowInsecureConnections attribute to the nuget.config file
       $nugetConfigPath = "$(Build.SourcesDirectory)\Nuget.Config"
