@@ -19,13 +19,13 @@ steps:
   inputs:
     versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-    feedsToUse: 'config'
-    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
-    noCache: true'
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'restore'
+#    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+#    feedsToUse: 'config'
+#    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+#    noCache: true'
 
 - task: UseDotNet@2
   displayName: 'Install dotnet sdk'
@@ -40,6 +40,17 @@ steps:
 #    filename: dotnet
 #    arguments: 'build --force'
 #    workingFolder: '
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+    feedsToUse: 'config'
+    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '--no-restore'
+    workingDirectory: '$(Build.SourcesDirectory)\app'
 
 - task: DotNetCoreCLI@2
   inputs:
