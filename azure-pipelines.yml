@@ -4,6 +4,15 @@ trigger:
 pool:
  name: BuildAgentOnPrem
 
+#- task: MSBuild@1
+#  inputs:
+#    solution: '**/*.sln'
+#    msbuildVersion: '17.0'
+#    msbuildArchitecture: 'x64'
+#    platform: 'AnyCPU'
+#    clean: true
+#    maximumCpuCount: true
+#    restoreNugetPackages: true
 
 steps:
 - task: NuGetToolInstaller@1
@@ -13,9 +22,10 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: '**/*.csproj'
+    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
     feedsToUse: 'config'
     externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+    noCache: true'
 
 - task: UseDotNet@2
   displayName: 'Install dotnet sdk'
@@ -30,13 +40,6 @@ steps:
 #    filename: dotnet
 #    arguments: 'build --force'
 #    workingFolder: '
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-    feedsToUse: 'config'
-    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
-    noCache: true'
 
 - task: DotNetCoreCLI@2
   inputs:
