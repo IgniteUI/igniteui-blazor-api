@@ -29,7 +29,14 @@ steps:
 #  inputs:
 #    filename: dotnet
 #    arguments: 'build --force'
-#    workingFolder: '$(Build.SourcesDirectory)\app'
+#    workingFolder: '
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+    feedsToUse: 'config'
+    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
+    noCache: true'
 
 - task: DotNetCoreCLI@2
   inputs:
