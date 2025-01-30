@@ -17,6 +17,13 @@ steps:
     feedsToUse: 'config'
     externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
 
+- task: UseDotNet@2
+  displayName: 'Install dotnet sdk'
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
+    performMultiLevelLookup: false
+
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
