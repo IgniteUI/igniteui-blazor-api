@@ -1,21 +1,10 @@
 
 pool:
  name: BuildAgentOnPrem
- demands:
-  - Agent.ComputerName -equals IGBGSOFBUILD90
-
-#- task: MSBuild@1
-#  inputs:
-#    solution: '**/*.sln'
-#    msbuildVersion: '17.0'
-#    msbuildArchitecture: 'x64'
-#    platform: 'AnyCPU'
-#    clean: true
-#    maximumCpuCount: true
-#    restoreNugetPackages: true
 
 steps:
 - task: NuGetToolInstaller@1
+  displayName: 'Use specific version of NuGet cli'
   inputs:
     versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
 
@@ -23,14 +12,12 @@ steps:
   inputs:
     nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
 
+# (part 1/2) This circumvents the AllowInsecureConnections option's current limitations
 - task: PowerShell@2
-  displayName: 'Identify trial packages and use licensed ones instead'
+  displayName: 'Identify IgniteUI packages and install them in a temp dir'
   inputs:
     targetType: 'inline'
     script: |
-      nuget install IgniteUI.Blazor.Documents.Core -Version 23.1.37 -DependencyVersion Ignore
-
-
       $xml = [XML](Get-Content '.\blazor-app.csproj');
       $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
         ForEach-Object { 
@@ -40,34 +27,23 @@ steps:
             Write-Host $nugetInstallCommand
             Invoke-Expression -Command $nugetInstallCommand
         }
-      
-      Get-ChildItem $(Build.SourcesDirectory)\tempLocalFeed -Recurse
-
-      nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config
     failOnStderr: true
     showWarnings: true
     workingDirectory: '$(Build.SourcesDirectory)\app'
+
+# (part 2/2) This circumvents the AllowInsecureConnections option's current limitations
+- task: CmdLine@2
+  displayName: 'Add temp local dir as a local nuget feed' 
+  inputs:
+    script: 'nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config'
+
 - task: UseDotNet@2
   displayName: 'Install dotnet sdk'
   inputs:
     packageType: 'sdk'
-    version: '6.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
+    version: '6.x'
     performMultiLevelLookup: false
 
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'restore'
-#    restoreSolution: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-#    feedsToUse: 'config'
-#    externalFeedCredentials: 'IG ProGet IgniteUINuGet - Staging'
-#    noCache: true
-
-#- task: CmdLine@1
-#  displayName: 'Run dotnet in blazor app'
-#  inputs:
-#    filename: dotnet
-#    arguments: 'build --force'
-#    workingFolder: '
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -81,12 +57,6 @@ steps:
     command: 'build'
     projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
     arguments: '--no-restore'
-
-#- task: DotNetCoreCLI@2
-#  inputs:
-#    command: 'build'
-#    arguments: '--no-restore'
-#    workingDirectory: '$(Build.SourcesDirectory)\app'
 
 - task: NodeTool@0
   inputs:
@@ -109,4 +79,3 @@ steps:
     targetPath: '$(Build.SourcesDirectory)\_site'
     artifact: 'site'
     publishLocation: 'pipeline'
-# TODO: Discuss with Maya if we need any other steps here.
