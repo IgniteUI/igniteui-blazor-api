@@ -18,6 +18,11 @@ steps:
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
+
+- task: NuGetAuthenticate@1
+  inputs:
+    nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
+
 - task: PowerShell@2
   displayName: 'Identify trial packages and use licensed ones instead'
   inputs:
