@@ -18,6 +18,12 @@ steps:
     packageType: 'sdk'
     version: '9.0.101'
     performMultiLevelLookup: false
+- task: Npm@1
+  displayName: 'npm ci'
+  inputs:
+    command: custom
+    workingDir: '$(Build.SourcesDirectory)'
+    customCommand: ci
 - task: PowerShell@2
   displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
   inputs:
