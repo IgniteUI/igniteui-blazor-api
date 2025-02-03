@@ -36,12 +36,14 @@ steps:
         ForEach-Object { 
             Write-Host $_.Include
             Write-Host $_.Version
-            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\app\bin\Debug"
+            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\b\tempLocalFeed"
             Write-Host $nugetInstallCommand
             Invoke-Expression -Command $nugetInstallCommand
         }
       
-      Get-ChildItem $(Build.SourcesDirectory)\app\bin\Debug -Recurse
+      Get-ChildItem $(Build.SourcesDirectory)\b\tempLocalFeed -Recurse
+
+      nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\b\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config
     failOnStderr: true
     showWarnings: true
     workingDirectory: '$(Build.SourcesDirectory)\app'
@@ -67,11 +69,11 @@ steps:
 #    arguments: 'build --force'
 #    workingFolder: '
 
-#- task: DotNetCoreCLI@2
-#  inputs:
-#    command: 'build'
-#    arguments: '--no-restore'
-#    workingDirectory: '$(Build.SourcesDirectory)\app'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    feedsToUse: 'config'
+    nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
 
 #- task: DotNetCoreCLI@2
 #  inputs:
