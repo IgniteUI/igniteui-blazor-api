@@ -67,6 +67,7 @@ jobs:
       inputs:
         command: 'restore'
         projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+        restoreArguments: '--ignore-failed-sources'
         feedsToUse: 'config'
         nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
 
