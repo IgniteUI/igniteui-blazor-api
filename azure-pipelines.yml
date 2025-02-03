@@ -2,11 +2,72 @@ trigger:
 - master
 
 pool:
-  name: BuildDeployment
+  name: BuildAgentOnPrem
   demands:
-  - Agent.ComputerName -equals S0103BLD1P
+  - Agent.ComputerName -equals IGBGSOFBUILD90
 
 steps:
+- task: NodeTool@0
+  displayName: 'Install Node'
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '16.x'
+- task: UseDotNet@2
+  displayName: 'Install dotnet if not already present'
+  inputs:
+    packageType: 'sdk'
+    version: '9.0.101'
+    performMultiLevelLookup: false
+- task: Npm@1
+  displayName: 'npm ci'
+  inputs:
+    command: custom
+    workingDir: '$(Build.SourcesDirectory)'
+    customCommand: ci
+- task: PowerShell@2
+  displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
+  inputs:
+    targetType: 'inline'
+    script: |
+      dotnet new nugetconfig --force
+      # The name of the source doesn't currently matter as the credentials are attached thanks to URL matching - according to MS docs
+      dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
+      # Manually add the allowInsecureConnections attribute to the nuget.config file
+      $nugetConfigPath = "$(Build.SourcesDirectory)\NuGet.Config"
+      [xml]$nugetConfig = Get-Content $nugetConfigPath
+      $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
+      $nugetConfig.Save($nugetConfigPath)
+    failOnStderr: true
+    showWarnings: true
+    workingDirectory: '$(Build.SourcesDirectory)'
+- task: PowerShell@2
+  displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
+  inputs:
+    targetType: 'inline'
+    script: |
+      dotnet new nugetconfig --force
+      dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
+      # Manually add the allowInsecureConnections attribute to the nuget.config file
+      $nugetConfigPath = "$(Build.SourcesDirectory)\Nuget.Config"
+      [xml]$nugetConfig = Get-Content $nugetConfigPath
+      $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
+       # Add credentials to the nuget.config file
+      $packageSourceCredentials = $nugetConfig.CreateElement("packageSourceCredentials")
+      $source = $packageSourceCredentials.CreateElement("IG ProGet NuGet")
+      $add = $source.CreateElement("add")
+      $add.SetAttribute("key", "Username")
+      $add.SetAttribute("value", "$(IG_Nuget_Feed_Username)")
+      $source.AppendChild($add)
+      $add = $source.CreateElement("add")
+      $add.SetAttribute("key", "ClearTextPassword")
+      $add.SetAttribute("value", "$(IG_Nuget_Feed_Password)")
+      $source.AppendChild($add)
+      $packageSourceCredentials.AppendChild($source)
+      $nugetConfig.configuration.AppendChild($packageSourceCredentials)
+      $nugetConfig.Save($nugetConfigPath)
+    failOnStderr: true
+    showWarnings: true
+    workingDirectory: '$(Build.SourcesDirectory)'
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
