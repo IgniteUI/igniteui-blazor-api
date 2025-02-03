@@ -1,3 +1,13 @@
+parameters:
+- name: isVerbose
+  displayName: 'Get verbose output from steps - where configurable'
+  type: boolean
+  default: false
+- name: shouldCleanPostExectuion
+  displayName: 'Clean all pipeline dirs after the pipeline finishes?'
+  type: boolean
+  default: true
+
 jobs:
   - job: BuildBlazorAPIDocs
     workspace:
@@ -46,7 +56,6 @@ jobs:
         version: '6.x'
         performMultiLevelLookup: false
 
-
     - task: DotNetCoreCLI@2
       displayName: 'dotnet restore'
       inputs:
@@ -67,15 +76,20 @@ jobs:
         versionSource: 'spec'
         versionSpec: '18.x'
 
-    - task: Npm@0
+    - task: Npm@1
       displayName: 'npm install'
       inputs:
-        cwd: '$(Build.SourcesDirectory)'
-    - task: CmdLine@1
+        command: 'install'
+        verbose: ${{ parameters.isVerbose }}
+        workingDir: '$(Build.SourcesDirectory)'
+
+    - task: Npm@1
       displayName: 'npm run build'
       inputs:
-        filename: npm
-        arguments: 'run build'
+        command: custom
+        workingDir: '$(Build.SourcesDirectory)'
+        verbose: ${{ parameters.isVerbose }}
+        customCommand: 'run build'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish docfx _site artifact'
@@ -83,3 +97,6 @@ jobs:
         targetPath: '$(Build.SourcesDirectory)\_site'
         artifact: 'site'
         publishLocation: 'pipeline'
+
+    - task: PostBuildCleanup@4
+      condition: ${{ parameters.shouldCleanPostExectuion }}
