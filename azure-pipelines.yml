@@ -46,6 +46,7 @@ steps:
 
 
 - task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
   inputs:
     command: 'restore'
     projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
@@ -53,6 +54,7 @@ steps:
     nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
 
 - task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
   inputs:
     command: 'build'
     projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
