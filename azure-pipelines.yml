@@ -36,14 +36,14 @@ steps:
         ForEach-Object { 
             Write-Host $_.Include
             Write-Host $_.Version
-            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\b\tempLocalFeed"
+            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\tempLocalFeed"
             Write-Host $nugetInstallCommand
             Invoke-Expression -Command $nugetInstallCommand
         }
       
-      Get-ChildItem $(Build.SourcesDirectory)\b\tempLocalFeed -Recurse
+      Get-ChildItem $(Build.SourcesDirectory)\tempLocalFeed -Recurse
 
-      nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\b\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config
+      nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config
     failOnStderr: true
     showWarnings: true
     workingDirectory: '$(Build.SourcesDirectory)\app'
@@ -51,7 +51,7 @@ steps:
   displayName: 'Install dotnet sdk'
   inputs:
     packageType: 'sdk'
-    version: '6.0.101' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
+    version: '6.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest dotnet.exe
     performMultiLevelLookup: false
 
 #- task: NuGetCommand@2
@@ -72,8 +72,15 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
+    projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
     feedsToUse: 'config'
     nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+    arguments: '--no-restore'
 
 #- task: DotNetCoreCLI@2
 #  inputs:
