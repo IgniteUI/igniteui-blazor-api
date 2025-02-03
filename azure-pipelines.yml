@@ -103,5 +103,10 @@ steps:
     filename: npm
     arguments: 'run build'
 
-# TODO: Add pipeline artifact publishing
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish docfx _site artifact'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)\_site'
+    artifact: 'site'
+    publishLocation: 'pipeline'
 # TODO: Discuss with Maya if we need any other steps here.
