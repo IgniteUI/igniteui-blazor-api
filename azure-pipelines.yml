@@ -1,83 +1,85 @@
+jobs:
+  - job: BuildBlazorAPIDocs
+    workspace:
+      clean: all
+    pool:
+      name: BuildAgentOnPrem
+    steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Use specific version of NuGet cli'
+      inputs:
+        versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
 
-pool:
- name: BuildAgentOnPrem
+    - task: NuGetAuthenticate@1
+      inputs:
+        nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
 
-steps:
-- task: NuGetToolInstaller@1
-  displayName: 'Use specific version of NuGet cli'
-  inputs:
-    versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
+    # (part 1/2) This circumvents the AllowInsecureConnections option's current limitations
+    - task: PowerShell@2
+      displayName: 'Identify IgniteUI packages and install them in a temp dir'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $xml = [XML](Get-Content '.\blazor-app.csproj');
+          $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
+            ForEach-Object { 
+                Write-Host $_.Include
+                Write-Host $_.Version
+                $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\tempLocalFeed"
+                Write-Host $nugetInstallCommand
+                Invoke-Expression -Command $nugetInstallCommand
+            }
+        failOnStderr: true
+        showWarnings: true
+        workingDirectory: '$(Build.SourcesDirectory)\app'
 
-- task: NuGetAuthenticate@1
-  inputs:
-    nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
+    # (part 2/2) This circumvents the AllowInsecureConnections option's current limitations
+    - task: CmdLine@2
+      displayName: 'Add temp local dir as a local nuget feed' 
+      inputs:
+        script: 'nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config'
 
-# (part 1/2) This circumvents the AllowInsecureConnections option's current limitations
-- task: PowerShell@2
-  displayName: 'Identify IgniteUI packages and install them in a temp dir'
-  inputs:
-    targetType: 'inline'
-    script: |
-      $xml = [XML](Get-Content '.\blazor-app.csproj');
-      $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
-        ForEach-Object { 
-            Write-Host $_.Include
-            Write-Host $_.Version
-            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\tempLocalFeed"
-            Write-Host $nugetInstallCommand
-            Invoke-Expression -Command $nugetInstallCommand
-        }
-    failOnStderr: true
-    showWarnings: true
-    workingDirectory: '$(Build.SourcesDirectory)\app'
-
-# (part 2/2) This circumvents the AllowInsecureConnections option's current limitations
-- task: CmdLine@2
-  displayName: 'Add temp local dir as a local nuget feed' 
-  inputs:
-    script: 'nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config'
-
-- task: UseDotNet@2
-  displayName: 'Install dotnet sdk'
-  inputs:
-    packageType: 'sdk'
-    version: '6.x'
-    performMultiLevelLookup: false
+    - task: UseDotNet@2
+      displayName: 'Install dotnet sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '6.x'
+        performMultiLevelLookup: false
 
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: 'restore'
-    projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-    feedsToUse: 'config'
-    nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: 'restore'
+        projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+        feedsToUse: 'config'
+        nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    command: 'build'
-    projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
-    arguments: '--no-restore'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+        arguments: '--no-restore'
 
-- task: NodeTool@0
-  inputs:
-    versionSource: 'spec'
-    versionSpec: '18.x'
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '18.x'
 
-- task: Npm@0
-  displayName: 'npm install'
-  inputs:
-    cwd: '$(Build.SourcesDirectory)'
-- task: CmdLine@1
-  displayName: 'npm run build'
-  inputs:
-    filename: npm
-    arguments: 'run build'
+    - task: Npm@0
+      displayName: 'npm install'
+      inputs:
+        cwd: '$(Build.SourcesDirectory)'
+    - task: CmdLine@1
+      displayName: 'npm run build'
+      inputs:
+        filename: npm
+        arguments: 'run build'
 
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish docfx _site artifact'
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)\_site'
-    artifact: 'site'
-    publishLocation: 'pipeline'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish docfx _site artifact'
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)\_site'
+        artifact: 'site'
+        publishLocation: 'pipeline'
