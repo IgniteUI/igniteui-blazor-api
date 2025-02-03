@@ -46,14 +46,13 @@ steps:
       [xml]$nugetConfig = Get-Content $nugetConfigPath
       $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
        # Add credentials to the nuget.config file
-      $doc = $nugetConfig.DocumentElement.OwnerDocument
-      $packageSourceCredentials = $doc.CreateElement("packageSourceCredentials")
-      $source = $doc.CreateElement("IG ProGet NuGet")
-      $add = $doc.CreateElement("add")
+      $packageSourceCredentials = $nugetConfig.CreateElement("packageSourceCredentials")
+      $source = $packageSourceCredentials.CreateElement("IG ProGet NuGet")
+      $add = $source.CreateElement("add")
       $add.SetAttribute("key", "Username")
       $add.SetAttribute("value", "$(IG_Nuget_Feed_Username)")
       $source.AppendChild($add)
-      $add = $doc.CreateElement("add")
+      $add = $source.CreateElement("add")
       $add.SetAttribute("key", "ClearTextPassword")
       $add.SetAttribute("value", "$(IG_Nuget_Feed_Password)")
       $source.AppendChild($add)
