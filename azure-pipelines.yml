@@ -1,3 +1,11 @@
+trigger:
+  branches:
+    include:
+    - vnext
+    - master
+
+pr: none
+
 parameters:
 - name: isVerbose
   displayName: 'Get verbose output from steps - where configurable'
