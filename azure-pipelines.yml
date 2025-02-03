@@ -41,7 +41,7 @@ steps:
             Invoke-Expression -Command $nugetInstallCommand
         }
       
-      Get-ChildItem $(Build.SourcesDirectory)\app\bin\Debug -Recursive
+      Get-ChildItem $(Build.SourcesDirectory)\app\bin\Debug -Recurse
     failOnStderr: true
     showWarnings: true
     workingDirectory: '$(Build.SourcesDirectory)\app'
