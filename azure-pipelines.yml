@@ -2,7 +2,7 @@
 pool:
  name: BuildAgentOnPrem
  demands:
-  - Agent.ComputerName -equals S0103BLD1P
+  - Agent.ComputerName -equals IGBGSOFBUILD90
 
 #- task: MSBuild@1
 #  inputs:
