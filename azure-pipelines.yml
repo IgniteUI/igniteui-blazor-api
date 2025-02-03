@@ -31,10 +31,12 @@ steps:
         ForEach-Object { 
             Write-Host $_.Include
             Write-Host $_.Version
-            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore"
+            $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\app\bin\Debug"
             Write-Host $nugetInstallCommand
             Invoke-Expression -Command $nugetInstallCommand
         }
+      
+      Get-ChildItem $(Build.SourcesDirectory)\app\bin\Debug -Recursive
     failOnStderr: true
     showWarnings: true
     workingDirectory: '$(Build.SourcesDirectory)\app'
