@@ -7,6 +7,71 @@ pool:
   - Agent.ComputerName -equals S0103BLD1P
 
 steps:
+- task: NodeTool@0
+  displayName: 'Install Node'
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '16.x'
+- task: UseDotNet@2
+  displayName: 'Install dotnet if not already present'
+  inputs:
+    packageType: 'sdk'
+    version: '9.0.101'
+    performMultiLevelLookup: false
+- task: Npm@1
+  displayName: 'npm ci'
+  inputs:
+    command: custom
+    workingDir: '$(Build.SourcesDirectory)'
+    customCommand: ci
+- task: PowerShell@2
+  displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
+  continueOnError: true
+  inputs:
+    targetType: 'inline'
+    script: |        
+      dotnet new nugetconfig --force
+      dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
+      # Manually add the allowInsecureConnections attribute to the nuget.config file
+      Write-Host "getting config file"
+      Write-Host "$(Build.SourcesDirectory)\nuget.config"
+      $nugetConfigPath = "$(Build.SourcesDirectory)\nuget.config"
+      Write-Host "getting xml content"
+      [xml]$nugetConfig = Get-Content $nugetConfigPath
+      $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
+      # Add credentials to the nuget.config file
+      Write-Host "current config"
+      Write-Host $nugetConfig
+      Write-Host "adding credentials"
+      $packageSourceCredentials = $nugetConfig.CreateElement("packageSourceCredentials")
+      Write-Host "adding source"
+      $source = $nugetConfig.CreateElement("IG_x0020_ProGet_x0020_NuGet")
+
+      $addUsername = $nugetConfig.CreateElement("add")
+      Write-Host "adding username"
+      $userName = "$(IG_Nuget_Feed_Username)"
+      Write-Host "username is"
+      Write-Host "$userName"
+      $addUsername.SetAttribute("key", "Username")
+      Write-Host "setting attribute"
+      $addUsername.SetAttribute("value", $userName)
+
+      $source.AppendChild($addUsername)
+
+      $addPassword = $nugetConfig.CreateElement("add")
+      Write-Host "adding password"
+      $password = "$(IG_Nuget_Feed_Password)" 
+      $addPassword.SetAttribute("key", "ClearTextPassword")
+      $addPassword.SetAttribute("value", "$password")
+      $source.AppendChild($addPassword)
+
+      $packageSourceCredentials.AppendChild($source)
+      $nugetConfig.configuration.AppendChild($packageSourceCredentials)
+      Write-Host "writing contents to file"
+      $nugetConfig.OuterXml | Set-Content -Path $nugetConfigPath
+    failOnStderr: true
+    showWarnings: true
+    workingDirectory: '$(Build.SourcesDirectory)' 
 - task: CmdLine@1
   displayName: 'Run dotnet in blazor app'
   inputs:
