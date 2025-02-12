@@ -1,107 +1,109 @@
 trigger:
-- master
+  branches:
+    include:
+    - vnext
+    - master
 
-pool:
-  name: BuildDeployment
-  demands:
-  - Agent.ComputerName -equals S0103BLD1P
+parameters:
+- name: isVerbose
+  displayName: 'Get verbose output from steps - where configurable'
+  type: boolean
+  default: false
+- name: shouldCleanPostExectuion
+  displayName: 'Clean all pipeline dirs after the pipeline finishes?'
+  type: boolean
+  default: true
 
-steps:
-- task: NodeTool@0
-  displayName: 'Install Node'
-  inputs:
-    versionSource: 'spec'
-    versionSpec: '16.x'
-- task: UseDotNet@2
-  displayName: 'Install dotnet if not already present'
-  inputs:
-    packageType: 'sdk'
-    version: '9.0.101'
-    performMultiLevelLookup: false
-- task: Npm@1
-  displayName: 'npm ci'
-  inputs:
-    command: custom
-    workingDir: '$(Build.SourcesDirectory)'
-    customCommand: ci
-- task: PowerShell@2
-  displayName: 'Generate NuGet.config for IG ProGet NuGet feed'
-  continueOnError: true
-  inputs:
-    targetType: 'inline'
-    script: |        
-      dotnet new nugetconfig --force
-      dotnet nuget add source http://proget.infragistics.local:81/nuget/IgniteUINuGet/ --name "IG ProGet NuGet" --allow-insecure-connections
-      # Manually add the allowInsecureConnections attribute to the nuget.config file
-      Write-Host "getting config file"
-      Write-Host "$(Build.SourcesDirectory)\nuget.config"
-      $nugetConfigPath = "$(Build.SourcesDirectory)\nuget.config"
-      Write-Host "getting xml content"
-      [xml]$nugetConfig = Get-Content $nugetConfigPath
-      $nugetConfig.configuration.packageSources.add | Where-Object { $_.name -eq "IG ProGet NuGet" } | ForEach-Object { $_.allowInsecureConnections = "true" }
-      # Add credentials to the nuget.config file
-      Write-Host "current config"
-      Write-Host $nugetConfig
-      Write-Host "adding credentials"
-      $packageSourceCredentials = $nugetConfig.CreateElement("packageSourceCredentials")
-      Write-Host "adding source"
-      $source = $nugetConfig.CreateElement("IG_x0020_ProGet_x0020_NuGet")
+jobs:
+  - job: BuildBlazorAPIDocs
+    workspace:
+      clean: all
+    pool:
+      name: BuildAgentOnPrem
+    steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Use specific version of NuGet cli'
+      inputs:
+        versionSpec: '6.2.x' # we are using a legacy (according to Microsoft) feed so we don't want the newest nuget.exe
 
-      $addUsername = $nugetConfig.CreateElement("add")
-      Write-Host "adding username"
-      $userName = "$(IG_Nuget_Feed_Username)"
-      Write-Host "username is"
-      Write-Host "$userName"
-      $addUsername.SetAttribute("key", "Username")
-      Write-Host "setting attribute"
-      $addUsername.SetAttribute("value", $userName)
+    - task: NuGetAuthenticate@1
+      inputs:
+        nuGetServiceConnections: 'IG ProGet IgniteUINuGet - Staging'
 
-      $source.AppendChild($addUsername)
+    # (part 1/2) This circumvents the AllowInsecureConnections option's current limitations
+    - task: PowerShell@2
+      displayName: 'Identify IgniteUI packages and install them in a temp dir'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $xml = [XML](Get-Content '.\blazor-app.csproj');
+          $nodes = $xml.SelectNodes("//PackageReference[starts-with(@Include,'IgniteUI')]") | 
+            ForEach-Object { 
+                Write-Host $_.Include
+                Write-Host $_.Version
+                $nugetInstallCommand = "nuget install $($_.Include) -Version $($_.Version) -DependencyVersion Ignore -OutputDirectory $(Build.SourcesDirectory)\tempLocalFeed"
+                Write-Host $nugetInstallCommand
+                Invoke-Expression -Command $nugetInstallCommand
+            }
+        failOnStderr: true
+        showWarnings: true
+        workingDirectory: '$(Build.SourcesDirectory)\app'
 
-      $addPassword = $nugetConfig.CreateElement("add")
-      Write-Host "adding password"
-      $password = "$(IG_Nuget_Feed_Password)" 
-      $addPassword.SetAttribute("key", "ClearTextPassword")
-      $addPassword.SetAttribute("value", "$password")
-      $source.AppendChild($addPassword)
+    # (part 2/2) This circumvents the AllowInsecureConnections option's current limitations
+    - task: CmdLine@2
+      displayName: 'Add temp local dir as a local nuget feed' 
+      inputs:
+        script: 'nuget sources add -Name "Local temp feed" -Source $(Build.SourcesDirectory)\tempLocalFeed -ConfigFile $(Build.SourcesDirectory)\NuGet.Config'
 
-      $packageSourceCredentials.AppendChild($source)
-      $nugetConfig.configuration.AppendChild($packageSourceCredentials)
-      Write-Host "writing contents to file"
-      $nugetConfig.OuterXml | Set-Content -Path $nugetConfigPath
-    failOnStderr: true
-    showWarnings: true
-    workingDirectory: '$(Build.SourcesDirectory)' 
-- task: CmdLine@1
-  displayName: 'Run dotnet in blazor app'
-  inputs:
-    filename: dotnet
-    arguments: restore
-    workingFolder: '$(Build.SourcesDirectory)\app'
-- task: CmdLine@1
-  displayName: 'Run dotnet in blazor app'
-  inputs:
-    filename: dotnet
-    arguments: 'build --force'
-    workingFolder: '$(Build.SourcesDirectory)\app'
-- task: Npm@0
-  displayName: 'npm install'
-  inputs:
-    cwd: '$(Build.SourcesDirectory)'
-- task: CmdLine@1
-  displayName: 'npm run build'
-  inputs:
-    filename: npm
-    arguments: 'run build'
-- task: ArchiveFiles@1
-  displayName: 'Archive files '
-  inputs:
-    rootFolder: '$(Build.SourcesDirectory)/_site'
-    includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/IgniteUIBlazorAPIDocfx.zip'
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: docsAPISite'
-  inputs:
-    ArtifactName: docsAPISite
-    publishLocation: FilePath
-    TargetPath: '\\infragistics.local\igfiles\Builds\Blazor\$(Build.BuildNumber)'
+    - task: UseDotNet@2
+      displayName: 'Install dotnet sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '6.x'
+        performMultiLevelLookup: false
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: 'restore'
+        projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+        restoreArguments: '--ignore-failed-sources'
+        feedsToUse: 'config'
+        nugetConfigPath: '$(Build.SourcesDirectory)\NuGet.config'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        projects: '$(Build.SourcesDirectory)\app\blazor-app.csproj'
+        arguments: '--no-restore'
+
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '18.x'
+
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        command: 'install'
+        verbose: ${{ parameters.isVerbose }}
+        workingDir: '$(Build.SourcesDirectory)'
+
+    - task: Npm@1
+      displayName: 'npm run build'
+      inputs:
+        command: custom
+        workingDir: '$(Build.SourcesDirectory)'
+        verbose: ${{ parameters.isVerbose }}
+        customCommand: 'run build'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish docfx _site artifact'
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)\_site'
+        artifact: 'site'
+        publishLocation: 'pipeline'
+
+    - task: PostBuildCleanup@4
+      condition: ${{ parameters.shouldCleanPostExectuion }}
