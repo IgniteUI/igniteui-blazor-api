@@ -82,6 +82,12 @@ h1, h2, h3, h4, h5, h6, .text-break {
   background-image: url(https://infragistics.com/products/ignite-ui-web-components/api/docs/typescript/latest/assets/images/icons.png);
 }
 
+.container {
+    width: calc(100% - 4rem);
+    margin-right: 2rem;
+    margin-left: 2rem;
+}
+
 h1 mark,
 h2 mark,
 h3 mark,
