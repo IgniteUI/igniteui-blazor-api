@@ -6,6 +6,10 @@ This project generates API documentation for **Ignite UI for Blazor** components
 - installing npm packages
 - building Blazor API project
 
+## Install DocFX
+
+- run `choco install docfx -y` command
+
 ## Setup Blazor Application
 
 This section will guide you to setup a blazor application in the `app` folder:
@@ -18,6 +22,7 @@ This section will guide you to setup a blazor application in the `app` folder:
 - run `cd app` command
 - run `dotnet restore --force` command
 - run `dotnet build --force` command
+
 
 ## Setup Blazor API
 
