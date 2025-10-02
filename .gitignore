@@ -22,3 +22,5 @@ src-org
 /api/.manifest
 /api/index.md
 /api-full/*.*
+
+/app/.vs

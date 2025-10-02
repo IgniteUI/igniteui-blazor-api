@@ -150,6 +150,8 @@ function updateIndex(callback) {
     tableMarkdown += "API Component        | Resources \n"
     tableMarkdown += "-------------------- | ------------------- \n"
 
+    var controlsCounter = 0;
+
     for (const info of jsonLinks) {
         // [IgbTreemap](IgniteUI.Blazor.Controls.IgbTreemap.html) | [Docs & Examples](https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/charts/types/treemap-chart)
         var api = info.api;
@@ -168,8 +170,8 @@ function updateIndex(callback) {
             mdLinks.push(mdLink);
         }
         row += mdLinks.join(" <br> ");
-
         tableMarkdown += row + "\n";
+        controlsCounter++;
     }
     // console.log(tableMarkdown);
 
@@ -181,6 +183,7 @@ function updateIndex(callback) {
 
         var output = indexFile.substring(0, tableStart) + "\n" + tableMarkdown + indexFile.substring(tableEnd);;
 
+        console.log("updated " + controlsCounter + " API components in " + filePath);
         // console.log(output);
         fs.writeFileSync(filePath, output);
     }
