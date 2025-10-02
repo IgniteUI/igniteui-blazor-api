@@ -9,8 +9,8 @@
     "child_process": "^1.0.2",
     "del": "^6.0.0",
     "event-stream": "^4.0.1",
-    "gulp-cli" : "^2.2.0",
-    "gulp": "^4.0.2"
+    "gulp-cli" : "^3.1.0",
+    "gulp": "^5.0.1"
   },
   "scripts": {
     "build": "gulp build",
