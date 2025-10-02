@@ -7,6 +7,7 @@
   { "api": "IgbTreeGrid", "links": [ { "url": "/grids/tree-grid/overview" }] },
   { "api": "IgbTree", "links": [ { "url": "/grids/tree" }] },
   { "api": "IgbDataLegend", "links": [ { "url": "/charts/features/chart-data-legend" }] },
+  { "api": "IgbDataPieChart", "links": [ { "url": "/charts/types/data-pie-chart" }] },
   { "api": "IgbCircularProgress", "links": [ { "url": "/inputs/circular-progress" }] },
   { "api": "IgbChip", "links": [ { "url": "/inputs/chip" }] },
   { "api": "IgbDropdown", "links": [ { "url": "/inputs/dropdown" }] },
