@@ -31,6 +31,7 @@ function cleanObj(callback) {
     del.sync("src/obj/**/*");
     del.sync("src/obj");
     del.sync("src/IgniteUI.Blazor*.dll");
+    del.sync("src/IgniteUI.Blazor*.xml");
     callback();
     return;
 // });
@@ -60,7 +61,7 @@ function copyBlazorSource(callback) {
      // './app/bin/Debug/net6.0/IgniteUI.Blazor.Documents.Excel.dll',
     ])
     .pipe(es.map(function(file, fileCallback) {
-        console.log("copying " + file.dirname + '/' + file.basename);
+        console.log("copying " + file.dirname + '\\' + file.basename);
         fileCallback(null, file);
     }))
     .pipe(gulp.dest('./src'))
