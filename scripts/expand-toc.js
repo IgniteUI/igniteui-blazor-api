@@ -3,10 +3,12 @@ const path = require('path');
 
 const API_JSON_DIR = path.join(__dirname, '..', 'api-json', 'api');
 const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
+const TOC_PATH_2 = path.join(__dirname, '..', 'api-json', 'IgniteUI.Blazor.json');
 
 function expandItem(item) {
-    if (item.href) {
-        const filePath = path.join(API_JSON_DIR, item.href);
+    const ref = item.href || item.id + '.json';
+    if (ref) {
+        const filePath = path.join(API_JSON_DIR, ref);
         if (fs.existsSync(filePath)) {
             try {
                 let fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -26,17 +28,15 @@ function expandItem(item) {
                     return `"summary": "${clean}"`;
                 });
                 const content = JSON.parse(fileContent);
-                // Replace href with the actual JSON content
-                delete item.href;
                 Object.assign(item, content);
             } catch (e) {
-                console.warn(`Warning: could not parse ${item.href}: ${e.message}`);
+                console.warn(`Warning: could not parse ${ref}: ${e.message}`);
             }
         }
     }
     // Recurse into nested items
-    if (item.items && Array.isArray(item.items)) {
-        item.items.forEach(expandItem);
+    if (item.children && Array.isArray(item.children)) {
+        item.children.forEach(expandItem);
     }
 }
 
@@ -48,5 +48,5 @@ const toc = JSON.parse(raw);
 
 toc.forEach(expandItem);
 
-fs.writeFileSync(TOC_PATH, JSON.stringify(toc, null, 2), 'utf-8');
-console.log(`Expanded ${TOC_PATH} — all hrefs inlined.`);
+fs.writeFileSync(TOC_PATH_2, JSON.stringify(toc, null, 2), 'utf-8');
+console.log(`Expanded ${TOC_PATH_2} — all hrefs inlined.`);
