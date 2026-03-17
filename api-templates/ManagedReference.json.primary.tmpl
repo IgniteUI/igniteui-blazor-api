@@ -1,18 +1,24 @@
 {
-  "id": "{{uid}}",
+  "uid": "{{uid}}",
+  "id": 0,
   "name": "{{name.0.value}}",
   "fullName": "{{fullName.0.value}}",
   "namespace": "{{namespace.uid}}",
-  "kind": "{{type}}",
+  "kindString": "{{type}}",
   "comment": {
-    "kind": "text",
-    "summary": "{{summary}}"
+    "summary": [
+					{
+						"kindString": "text",
+						"text": "{{summary}}"
+					}
+				]
   },
   "inheritance": [
     {{#if inheritance}}
     {{#each inheritance}}
     {
-      "id": "{{uid}}",
+      "uid": "{{uid}}",
+      "id": 0,
       "name": "{{name.0.value}}"
     }{{#unless @last}},{{/unless}}
     {{/each}}
@@ -22,7 +28,8 @@
     {{#if implements}}
     {{#each implements}}
     {
-      "id": "{{uid}}",
+      "uid": "{{uid}}",
+      "id": 0,
       "name": "{{name.0.value}}"
     }{{#unless @last}},{{/unless}}
     {{/each}}
@@ -32,13 +39,18 @@
     {{#if children}}
     {{#each children}}
     {
-      "id": "{{uid}}",
+      "uid": "{{uid}}",
+      "id": 0,
       "name": "{{name.0.value}}",
       "fullName": "{{fullName.0.value}}",
-      "kind": "{{type}}",
+      "kindString": "{{type}}",
       "comment": {
-        "kind": "text",
-        "summary": "{{summary}}"
+        "summary": [
+					{
+						"kindString": "text",
+						"text": "{{summary}}"
+					}
+				]
       },
       {{#if syntax}}
       "syntax": {

@@ -1,18 +1,4 @@
-[
-{{#each items}}
-  {
-    "id": "{{topicUid}}",
-    "name": "{{name}}",
-    "href": "{{topicHref}}",
-    "children": [
-    {{#each items}}
-      {
-        "id": "{{topicUid}}",
-        "name": "{{name}}",
-        "href": "{{topicHref}}"
-      }{{#unless @last}},{{/unless}}
-    {{/each}}
-    ]
-  }{{#unless @last}},{{/unless}}
-{{/each}}
-]
+{
+"uid": "IgniteUI.Blazor.Controls",
+"name": "IgniteUI.Blazor.Controls",
+}

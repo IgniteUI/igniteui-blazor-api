@@ -6,16 +6,16 @@ const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
 const TOC_PATH_2 = path.join(__dirname, '..', 'api-json', 'IgniteUI.Blazor.json');
 
 function expandItem(item) {
-    const ref = item.href || item.id + '.json';
+    const ref = item.href || item.uid + '.json';
     if (ref) {
         const filePath = path.join(API_JSON_DIR, ref);
         if (fs.existsSync(filePath)) {
             try {
                 let fileContent = fs.readFileSync(filePath, 'utf-8');
                 fileContent = fileContent.replace(/,\s*([\]}])/g, '$1');
-                // Strip HTML tags from summary values before parsing
+                // Strip HTML tags from "text" values inside summary arrays
                 // to avoid unescaped quotes/attributes breaking JSON
-                fileContent = fileContent.replace(/"summary":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
+                fileContent = fileContent.replace(/"text":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
                     let clean = val;
                     // Decode HTML entities first
                     clean = clean.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#39;/g, "'");
@@ -25,7 +25,7 @@ function expandItem(item) {
                     clean = clean.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
                     // Escape any double quotes for valid JSON
                     clean = clean.replace(/"/g, '\\"');
-                    return `"summary": "${clean}"`;
+                    return `"text": "${clean}"`;
                 });
                 const content = JSON.parse(fileContent);
                 Object.assign(item, content);
@@ -46,8 +46,8 @@ let raw = fs.readFileSync(TOC_PATH, 'utf-8');
 raw = raw.replace(/,\s*([\]}])/g, '$1');
 
 const toc = JSON.parse(raw);
-
-toc.forEach(expandItem);
+expandItem(toc);
+// toc.children.forEach(expandItem);
 
 fs.writeFileSync(TOC_PATH_2, JSON.stringify(toc, null, 2), 'utf-8');
 console.log(`Expanded ${TOC_PATH_2} — all hrefs inlined.`);
