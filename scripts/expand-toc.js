@@ -29,6 +29,7 @@ function expandItem(item) {
                 });
                 const content = JSON.parse(fileContent);
                 Object.assign(item, content);
+                delete item.href;
             } catch (e) {
                 console.warn(`Warning: could not parse ${ref}: ${e.message}`);
             }
