@@ -1,0 +1,18 @@
+[
+{{#each items}}
+  {
+    "id": "{{topicUid}}",
+    "name": "{{name}}",
+    "href": "{{topicHref}}",
+    "children": [
+    {{#each items}}
+      {
+        "id": "{{topicUid}}",
+        "name": "{{name}}",
+        "href": "{{topicHref}}"
+      }{{#unless @last}},{{/unless}}
+    {{/each}}
+    ]
+  }{{#unless @last}},{{/unless}}
+{{/each}}
+]

@@ -1,0 +1,29 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/IgniteUI.Blazor.dll"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "exportRawModel": true,
+    "exportViewModel": true,
+    "template": ["api-templates"],
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/toc.yml"
+        ]
+      }
+    ],
+    "rawModelOutputFolder": "api-raw",
+    "dest": "api-json"
+  }
+}

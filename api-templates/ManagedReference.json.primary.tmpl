@@ -1,0 +1,68 @@
+{
+  "id": "{{uid}}",
+  "name": "{{name.0.value}}",
+  "fullName": "{{fullName.0.value}}",
+  "namespace": "{{namespace.uid}}",
+  "kind": "{{type}}",
+  "comment": {
+    "kind": "text",
+    "summary": "{{summary}}"
+  },
+  "inheritance": [
+    {{#if inheritance}}
+    {{#each inheritance}}
+    {
+      "id": "{{uid}}",
+      "name": "{{name.0.value}}"
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ],
+  "implements": [
+    {{#if implements}}
+    {{#each implements}}
+    {
+      "id": "{{uid}}",
+      "name": "{{name.0.value}}"
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ],
+  "children": [
+    {{#if children}}
+    {{#each children}}
+    {
+      "id": "{{uid}}",
+      "name": "{{name.0.value}}",
+      "fullName": "{{fullName.0.value}}",
+      "kind": "{{type}}",
+      "comment": {
+        "kind": "text",
+        "summary": "{{summary}}"
+      },
+      {{#if syntax}}
+      "syntax": {
+        "parameters": [
+          {{#if syntax.parameters}}
+          {{#each syntax.parameters}}
+          {
+            "name": "{{id}}",
+            "type": "{{type.name.0.value}}",
+            "fullTypeName": "{{type.fullName.0.value}}"
+          }{{#unless @last}},{{/unless}}
+          {{/each}}
+          {{/if}}
+        ],
+        "return": {
+          {{#if syntax.return}}
+          "type": "{{syntax.return.type.name.0.value}}",
+          "fullTypeName": "{{syntax.return.type.fullName.0.value}}"
+          {{/if}}
+        }
+      }
+      {{/if}}
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ]
+}

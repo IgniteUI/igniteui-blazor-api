@@ -12,6 +12,8 @@ _site
 _site/**
 _site/*.*
 node_modules
+api-json
+api-raw
 
 # excluding IG assemblies and xml files
 src/*.dll
