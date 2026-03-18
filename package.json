@@ -14,9 +14,12 @@
   },
   "scripts": {
     "build": "gulp build",
+    "prepare": "gulp prepare",
     "build:IgniteUI.Blazor": "docfx docfx-build-IgniteUI.Blazor.json && node scripts/expand-toc.js",
     "build:IgniteUI.Blazor.Documents.Core": "docfx docfx-build-IgniteUI.Blazor.Documents.Core.json && node scripts/expand-toc.js",
     "build:IgniteUI.Blazor.Documents.Excel": "docfx docfx-build-IgniteUI.Blazor.Documents.Excel.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.Lite": "docfx docfx-build-IgniteUI.Blazor.Lite.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.GridLite": "docfx docfx-build-IgniteUI.Blazor.GridLite.json && node scripts/expand-toc.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "combine:toc": "node scripts/expand-toc.js"
   },

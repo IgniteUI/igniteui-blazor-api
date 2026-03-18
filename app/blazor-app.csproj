@@ -1,32 +1,54 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IgniteUI.Blazor" Version="25.1.86" />
     <PackageReference Include="IgniteUI.Blazor.Documents.Core" Version="25.1.86" />
     <PackageReference Include="IgniteUI.Blazor.Documents.Excel" Version="25.1.86" />
+    <!-- These packages don't have net6.0 TFM, so we reference the DLLs directly below -->
+    <PackageReference Include="IgniteUI.Blazor.GridLite" Version="0.6.0" ExcludeAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="IgniteUI.Blazor.Lite" Version="0.0.1" ExcludeAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Direct reference to the net8.0 DLLs since no net6.0 version exists -->
+  <ItemGroup>
+    <Reference Include="IgniteUI.Blazor.Lite">
+      <HintPath>$(PkgIgniteUI_Blazor_Lite)\lib\net8.0\IgniteUI.Blazor.Lite.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="IgniteUI.Blazor.GridLite">
+      <HintPath>$(PkgIgniteUI_Blazor_GridLite)\lib\net8.0\IgniteUI.Blazor.GridLite.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Remove all static web assets from IgniteUI.Blazor.Lite to prevent duplicate asset errors with IgniteUI.Blazor -->
+  <Target Name="RemoveDuplicateLiteAssets" BeforeTargets="ResolveStaticWebAssetsInputs;GenerateStaticWebAssetsManifest">
     <ItemGroup>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor\25.1.86\lib\net6.0\IgniteUI.Blazor.xml">
-            <Link>IgniteUI.Blazor.xml</Link>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Core\25.1.86\lib\net6.0\IgniteUI.Blazor.Documents.Core.xml">
-            <Link>IgniteUI.Blazor.Documents.Core.xml</Link>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Excel\25.1.86\lib\net6.0\IgniteUI.Blazor.Documents.Excel.xml">
-            <Link>IgniteUI.Blazor.Documents.Excel.xml</Link>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+      <StaticWebAsset Remove="@(StaticWebAsset)" Condition="'%(SourceId)' == 'IgniteUI.Blazor.Lite'" />
     </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor\25.1.86\lib\net6.0\IgniteUI.Blazor.xml">
+      <Link>IgniteUI.Blazor.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Core\25.1.86\lib\net6.0\IgniteUI.Blazor.Documents.Core.xml">
+      <Link>IgniteUI.Blazor.Documents.Core.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Excel\25.1.86\lib\net6.0\IgniteUI.Blazor.Documents.Excel.xml">
+      <Link>IgniteUI.Blazor.Documents.Excel.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

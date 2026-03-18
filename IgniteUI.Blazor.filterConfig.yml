@@ -8,6 +8,3 @@ apiRules:
 - exclude:
     uidRegex: ^System\.Runtime\.CompilerServices\.
     type: Class
-- exclude:
-    uidRegex: ^IgniteUI\.Blazor\.Controls\.Util\.
-    type: Class
