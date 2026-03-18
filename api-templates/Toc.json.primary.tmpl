@@ -1,4 +1,14 @@
 {
-"uid": "IgniteUI.Blazor.Controls",
-"name": "IgniteUI.Blazor.Controls",
+"name": "{{_assemblyName}}",
+"children": [
+    {{#each items}}
+    {{#each items}}
+    {
+        "uid": "{{topicUid}}",
+        "name": "{{name}}",
+        "href": "{{topicHref}}"
+    },
+    {{/each}}
+    {{/each}}
+]
 }

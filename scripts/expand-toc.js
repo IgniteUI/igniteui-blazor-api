@@ -3,7 +3,7 @@ const path = require('path');
 
 const API_JSON_DIR = path.join(__dirname, '..', 'api-json', 'api');
 const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
-const TOC_PATH_2 = path.join(__dirname, '..', 'api-json', 'IgniteUI.Blazor.json');
+
 
 function expandItem(item) {
     const ref = item.href || item.uid + '.json';
@@ -46,8 +46,8 @@ let raw = fs.readFileSync(TOC_PATH, 'utf-8');
 raw = raw.replace(/,\s*([\]}])/g, '$1');
 
 const toc = JSON.parse(raw);
-expandItem(toc);
-// toc.children.forEach(expandItem);
+toc.children.forEach(expandItem);
 
+const TOC_PATH_2 = path.join(__dirname, '..', 'api-json', toc.name + '.json');
 fs.writeFileSync(TOC_PATH_2, JSON.stringify(toc, null, 2), 'utf-8');
 console.log(`Expanded ${TOC_PATH_2} — all hrefs inlined.`);
