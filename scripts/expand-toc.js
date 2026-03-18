@@ -48,6 +48,11 @@ raw = raw.replace(/,\s*([\]}])/g, '$1');
 const toc = JSON.parse(raw);
 toc.children.forEach(expandItem);
 
-const TOC_PATH_2 = path.join(__dirname, '..', 'api-json', toc.name + '.json');
-fs.writeFileSync(TOC_PATH_2, JSON.stringify(toc, null, 2), 'utf-8');
-console.log(`Expanded ${TOC_PATH_2} — all hrefs inlined.`);
+const distDir = path.join(__dirname, '..', 'dist');
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+}
+
+const DIST_PATH = path.join(distDir, toc.name + '.json');
+fs.writeFileSync(DIST_PATH, JSON.stringify(toc, null, 2), 'utf-8');
+console.log(`Expanded ${DIST_PATH} — all hrefs inlined.`);
