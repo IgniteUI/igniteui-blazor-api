@@ -1,0 +1,30 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/IgniteUI.Blazor.Documents.Excel.dll"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "template": ["api-templates"],
+    "globalMetadata": {
+      "_assemblyName": "IgniteUI.Blazor.Documents.Excel"
+    },
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/toc.yml"
+        ]
+      }
+    ],
+    "rawModelOutputFolder": "api-raw",
+    "dest": "api-json"
+  }
+}

@@ -2,13 +2,12 @@
 "name": "{{_assemblyName}}",
 "children": [
     {{#each items}}
-    {{#each items}}
     {
         "uid": "{{topicUid}}",
         "name": "{{name}}",
-        "href": "{{topicHref}}"
-    },
-    {{/each}}
+        "href": "{{topicHref}}",
+        "kindString": "{{type}}"
+    }{{#unless @last}},{{/unless}}
     {{/each}}
 ]
 }
