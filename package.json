@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "gulp build",
-    "build:docs": "docfx docfx-build-IgniteUI.Blazor.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor": "docfx docfx-build-IgniteUI.Blazor.json && node scripts/expand-toc.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "combine:toc": "node scripts/expand-toc.js"
   },

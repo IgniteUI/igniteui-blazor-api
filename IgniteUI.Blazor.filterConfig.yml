@@ -1,0 +1,13 @@
+apiRules:
+- exclude:
+    uidRegex: ^IgniteUI\.Blazor\._Imports$
+    type: Class
+- exclude:
+    uidRegex: ^IgniteUI\.Blazor\.Controls\.Description
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Runtime\.CompilerServices\.
+    type: Class
+- exclude:
+    uidRegex: ^IgniteUI\.Blazor\.Controls\.Util\.
+    type: Class

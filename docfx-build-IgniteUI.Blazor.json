@@ -9,12 +9,10 @@
         }
       ],
       "dest": "api",
-      "filter": "filterConfig.yml"
+      "filter": "IgniteUI.Blazor.filterConfig.yml"
     }
   ],
   "build": {
-    "exportRawModel": true,
-    "exportViewModel": true,
     "template": ["api-templates"],
     "content": [
       {
