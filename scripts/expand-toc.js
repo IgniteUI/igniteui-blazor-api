@@ -17,8 +17,8 @@ function expandItem(item) {
                 // to avoid unescaped quotes/attributes breaking JSON
                 fileContent = fileContent.replace(/"text":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
                     let clean = val;
-                    // Decode HTML entities first
-                    clean = clean.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#39;/g, "'");
+                    // Decode HTML entities so we can strip the resulting HTML tags
+                    clean = clean.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
                     // Strip HTML tags
                     clean = clean.replace(/<[^>]*>/g, '');
                     // Collapse whitespace and escaped newlines
@@ -48,11 +48,24 @@ raw = raw.replace(/,\s*([\]}])/g, '$1');
 const toc = JSON.parse(raw);
 toc.children.forEach(expandItem);
 
+
+
 const distDir = path.join(__dirname, '..', 'dist');
 if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
 }
 
 const DIST_PATH = path.join(distDir, toc.name + '.json');
-fs.writeFileSync(DIST_PATH, JSON.stringify(toc, null, 2), 'utf-8');
+const output = JSON.stringify(toc, (key, value) => {
+    if (typeof value === 'string') {
+        return value
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'");
+    }
+    return value;
+}, 2);
+fs.writeFileSync(DIST_PATH, output, 'utf-8');
 console.log(`Expanded ${DIST_PATH} — all hrefs inlined.`);
