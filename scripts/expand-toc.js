@@ -6,7 +6,7 @@ const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
 
 
 function expandItem(item) {
-    const ref = item.href || item.uid + '.json';
+    const ref = item.href || item.uid.replace(/`/g, '-') + '.json';
     if (ref) {
         const filePath = path.join(API_JSON_DIR, ref);
         if (fs.existsSync(filePath)) {
