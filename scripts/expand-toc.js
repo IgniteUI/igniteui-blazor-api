@@ -4,35 +4,48 @@ const path = require('path');
 const API_JSON_DIR = path.join(__dirname, '..', 'api-json', 'api');
 const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
 
+function parseFile(filePath) {
+    try {
+        let fileContent = fs.readFileSync(filePath, 'utf-8');
+        fileContent = fileContent.replace(/,\s*([\]}])/g, '$1');
+        // Strip HTML tags from "text" values inside summary arrays
+        // to avoid unescaped quotes/attributes breaking JSON
+        fileContent = fileContent.replace(/"text":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
+            let clean = val;
+            // Decode HTML entities so we can strip the resulting HTML tags
+            clean = clean.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            // Strip HTML tags
+            clean = clean.replace(/<[^>]*>/g, '');
+            // Collapse whitespace and escaped newlines
+            clean = clean.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+            // Escape any double quotes for valid JSON
+            clean = clean.replace(/"/g, '\\"');
+            return `"text": "${clean}"`;
+        });
+        return JSON.parse(fileContent);
+    } catch (e) {
+        console.warn(`Warning: could not parse ${filePath}: ${e.message}`);
+        return {};
+    }
+}
 
 function expandItem(item) {
     const ref = item.href || item.uid.replace(/`/g, '-') + '.json';
-    if (ref) {
+    const inheritedRef = item.inheritedFrom ? item.inheritedFrom + '.json' : null;
+    if (inheritedRef) {
+        const filePath = path.join(API_JSON_DIR, inheritedRef);
+        if (fs.existsSync(filePath)) {
+            const res = parseFile(filePath);
+            const child = res.children.find(c => c.uid === item.uid);
+            if (child) {
+                Object.assign(item, child);
+            }
+        }
+    } else if (ref) {
         const filePath = path.join(API_JSON_DIR, ref);
         if (fs.existsSync(filePath)) {
-            try {
-                let fileContent = fs.readFileSync(filePath, 'utf-8');
-                fileContent = fileContent.replace(/,\s*([\]}])/g, '$1');
-                // Strip HTML tags from "text" values inside summary arrays
-                // to avoid unescaped quotes/attributes breaking JSON
-                fileContent = fileContent.replace(/"text":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
-                    let clean = val;
-                    // Decode HTML entities so we can strip the resulting HTML tags
-                    clean = clean.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-                    // Strip HTML tags
-                    clean = clean.replace(/<[^>]*>/g, '');
-                    // Collapse whitespace and escaped newlines
-                    clean = clean.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
-                    // Escape any double quotes for valid JSON
-                    clean = clean.replace(/"/g, '\\"');
-                    return `"text": "${clean}"`;
-                });
-                const content = JSON.parse(fileContent);
-                Object.assign(item, content);
-                delete item.href;
-            } catch (e) {
-                console.warn(`Warning: could not parse ${ref}: ${e.message}`);
-            }
+            const res = parseFile(filePath);
+            Object.assign(item, res);
         }
     }
     // Recurse into nested items
