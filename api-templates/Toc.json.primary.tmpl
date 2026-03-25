@@ -1,0 +1,13 @@
+{
+"name": "{{_assemblyName}}",
+"children": [
+    {{#each items}}
+    {
+        "uid": "{{topicUid}}",
+        "name": "{{name}}",
+        "href": "{{topicHref}}",
+        "kindString": "{{type}}"
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+]
+}

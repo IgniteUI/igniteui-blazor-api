@@ -1,0 +1,31 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/IgniteUI.Blazor.GridLite.dll"
+          ]
+        }
+      ],
+      "dest": "api",
+      "filter": "IgniteUI.Blazor.GridLite.filterConfig.yml"
+    }
+  ],
+  "build": {
+    "template": ["api-templates"],
+    "globalMetadata": {
+      "_assemblyName": "IgniteUI.Blazor.GridLite"
+    },
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/toc.yml"
+        ]
+      }
+    ],
+    "rawModelOutputFolder": "api-raw",
+    "dest": "api-json"
+  }
+}

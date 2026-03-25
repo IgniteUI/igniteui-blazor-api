@@ -1,0 +1,133 @@
+{
+  "uid": "{{uid}}",
+  "id": 0,
+  "name": "{{name.0.value}}",
+  "fullName": "{{fullName.0.value}}",
+  "namespace": "{{namespace.uid}}",
+  "kindString": "{{type}}",
+  "comment": {
+    "summary": [
+					{
+						"kindString": "text",
+						"text": "{{summary}}"
+					},
+					{
+						"kindString": "code",
+						"text": "{{syntax.content.0.value}}"
+					}
+				]
+  },
+  "inheritance": [
+    {{#if inheritance}}
+    {{#each inheritance}}
+    {
+      "uid": "{{uid}}",
+      "id": 0,
+      "name": "{{name.0.value}}"
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ],
+  "implements": [
+    {{#if implements}}
+    {{#each implements}}
+    {
+      "uid": "{{uid}}",
+      "id": 0,
+      "name": "{{name.0.value}}"
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ],
+  "children": [
+    {{#if inheritedMembers}}
+    {{#each inheritedMembers}}
+    {
+      "uid": "{{uid}}",
+      "id": 0,
+      "name": "{{name.0.value}}",
+      "fullName": "{{fullName.0.value}}",
+      "kindString": "{{type}}",
+      "inheritedFrom": "{{inheritedFromClass}}",
+      "comment": {
+        "summary": [
+					{
+						"kindString": "text",
+						"text": "{{summary}}"
+					},
+					{
+						"kindString": "code",
+						"text": "{{syntax.content.0.value}}"
+					}
+				]
+      },
+      {{#if syntax}}
+      "syntax": {
+        "parameters": [
+          {{#if syntax.parameters}}
+          {{#each syntax.parameters}}
+          {
+            "name": "{{id}}",
+            "type": "{{type.name.0.value}}",
+            "fullTypeName": "{{type.fullName.0.value}}"
+          }{{#unless @last}},{{/unless}}
+          {{/each}}
+          {{/if}}
+        ],
+        "return": {
+          {{#if syntax.return}}
+          "type": "{{syntax.return.type.name.0.value}}",
+          "fullTypeName": "{{syntax.return.type.fullName.0.value}}"
+          {{/if}}
+        }
+      }
+      {{/if}}
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+    {{#if children}}
+    {{#each children}}
+    {
+      "uid": "{{uid}}",
+      "id": 0,
+      "name": "{{name.0.value}}",
+      "fullName": "{{fullName.0.value}}",
+      "kindString": "{{type}}",
+      "comment": {
+        "summary": [
+					{
+						"kindString": "text",
+						"text": "{{summary}}"
+					},
+					{
+						"kindString": "code",
+						"text": "{{syntax.content.0.value}}"
+					}
+				]
+      },
+      {{#if syntax}}
+      "syntax": {
+        "parameters": [
+          {{#if syntax.parameters}}
+          {{#each syntax.parameters}}
+          {
+            "name": "{{id}}",
+            "type": "{{type.name.0.value}}",
+            "fullTypeName": "{{type.fullName.0.value}}"
+          }{{#unless @last}},{{/unless}}
+          {{/each}}
+          {{/if}}
+        ],
+        "return": {
+          {{#if syntax.return}}
+          "type": "{{syntax.return.type.name.0.value}}",
+          "fullTypeName": "{{syntax.return.type.fullName.0.value}}"
+          {{/if}}
+        }
+      }
+      {{/if}}
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+    {{/if}}
+  ]
+}

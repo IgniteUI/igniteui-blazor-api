@@ -1,0 +1,31 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/IgniteUI.Blazor.dll"
+          ]
+        }
+      ],
+      "dest": "api",
+      "filter": "IgniteUI.Blazor.filterConfig.yml"
+    }
+  ],
+  "build": {
+    "template": ["api-templates"],
+    "globalMetadata": {
+      "_assemblyName": "IgniteUI.Blazor"
+    },
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/toc.yml"
+        ]
+      }
+    ],
+    "rawModelOutputFolder": "api-raw",
+    "dest": "api-json"
+  }
+}

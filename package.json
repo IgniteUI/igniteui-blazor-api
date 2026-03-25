@@ -14,7 +14,13 @@
   },
   "scripts": {
     "build": "gulp build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:IgniteUI.Blazor": "gulp prepare && docfx docfx-build-IgniteUI.Blazor.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.Documents.Core": "gulp prepare && docfx docfx-build-IgniteUI.Blazor.Documents.Core.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.Documents.Excel": "gulp prepare && docfx docfx-build-IgniteUI.Blazor.Documents.Excel.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.Lite": "gulp prepare && docfx docfx-build-IgniteUI.Blazor.Lite.json && node scripts/expand-toc.js",
+    "build:IgniteUI.Blazor.GridLite": "gulp prepare && docfx docfx-build-IgniteUI.Blazor.GridLite.json && node scripts/expand-toc.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "combine:toc": "node scripts/expand-toc.js"
   },
   "author": "",
   "license": "ISC"

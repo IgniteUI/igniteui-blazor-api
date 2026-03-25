@@ -1,0 +1,84 @@
+const fs = require('fs');
+const path = require('path');
+
+const API_JSON_DIR = path.join(__dirname, '..', 'api-json', 'api');
+const TOC_PATH = path.join(API_JSON_DIR, 'toc.json');
+
+function parseFile(filePath) {
+    try {
+        let fileContent = fs.readFileSync(filePath, 'utf-8');
+        fileContent = fileContent.replace(/,\s*([\]}])/g, '$1');
+        // Strip HTML tags from "text" values inside summary arrays
+        // to avoid unescaped quotes/attributes breaking JSON
+        fileContent = fileContent.replace(/"text":\s*"((?:[^"\\]|\\.)*)"/g, (match, val) => {
+            let clean = val;
+            // Decode HTML entities so we can strip the resulting HTML tags
+            clean = clean.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            // Strip HTML tags
+            clean = clean.replace(/<[^>]*>/g, '');
+            // Collapse whitespace and escaped newlines
+            clean = clean.replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim();
+            // Escape any double quotes for valid JSON
+            clean = clean.replace(/"/g, '\\"');
+            return `"text": "${clean}"`;
+        });
+        return JSON.parse(fileContent);
+    } catch (e) {
+        console.warn(`Warning: could not parse ${filePath}: ${e.message}`);
+        return {};
+    }
+}
+
+function expandItem(item) {
+    const ref = item.href || item.uid.replace(/`/g, '-') + '.json';
+    const inheritedRef = item.inheritedFrom ? item.inheritedFrom + '.json' : null;
+    if (inheritedRef) {
+        const filePath = path.join(API_JSON_DIR, inheritedRef);
+        if (fs.existsSync(filePath)) {
+            const res = parseFile(filePath);
+            const child = res.children.find(c => c.uid === item.uid);
+            if (child) {
+                Object.assign(item, child);
+            }
+        }
+    } else if (ref) {
+        const filePath = path.join(API_JSON_DIR, ref);
+        if (fs.existsSync(filePath)) {
+            const res = parseFile(filePath);
+            Object.assign(item, res);
+        }
+    }
+    // Recurse into nested items
+    if (item.children && Array.isArray(item.children)) {
+        item.children.forEach(expandItem);
+    }
+}
+
+// Read & fix trailing commas from Mustache output (e.g. single-item arrays)
+let raw = fs.readFileSync(TOC_PATH, 'utf-8');
+raw = raw.replace(/,\s*([\]}])/g, '$1');
+
+const toc = JSON.parse(raw);
+toc.children.forEach(expandItem);
+
+
+
+const distDir = path.join(__dirname, '..', 'dist');
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+}
+
+const DIST_PATH = path.join(distDir, toc.name + '.json');
+const output = JSON.stringify(toc, (key, value) => {
+    if (typeof value === 'string') {
+        return value
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'");
+    }
+    return value;
+}, 2);
+fs.writeFileSync(DIST_PATH, output, 'utf-8');
+console.log(`Expanded ${DIST_PATH} — all hrefs inlined.`);

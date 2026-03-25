@@ -135,6 +135,7 @@ function buildDOC(callback) {
 exports.buildDOC = buildDOC;
 
 exports.run = gulp.series(updateIndex, copyIndex, buildDOC);
+exports.prepare = gulp.series(updateIndex, copyIndex, copyBlazorSource);
 exports.build = gulp.series(clean, updateIndex, copyIndex, copyBlazorSource, buildAPI);
 
 // gulp.task('default', gulp.series('run'));
