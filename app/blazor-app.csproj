@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -16,15 +16,15 @@
   </ItemGroup>
 
     <ItemGroup>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor\25.2.83\lib\net6.0\IgniteUI.Blazor.xml">
+        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor\25.2.83\lib\net8.0\IgniteUI.Blazor.xml">
             <Link>IgniteUI.Blazor.xml</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Core\25.2.83\lib\net6.0\IgniteUI.Blazor.Documents.Core.xml">
+        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Core\25.2.83\lib\net8.0\IgniteUI.Blazor.Documents.Core.xml">
             <Link>IgniteUI.Blazor.Documents.Core.xml</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Excel\25.2.83\lib\net6.0\IgniteUI.Blazor.Documents.Excel.xml">
+        <Content Include="$(NuGetPackageRoot)\IgniteUI.Blazor.Documents.Excel\25.2.83\lib\net8.0\IgniteUI.Blazor.Documents.Excel.xml">
             <Link>IgniteUI.Blazor.Documents.Excel.xml</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
